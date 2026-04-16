@@ -1,0 +1,2368 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Jainco Pvt Ltd — Vendor Management System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+/* ══════════════════════════════════════════════════
+   THEME VARIABLES — 7 MODES
+══════════════════════════════════════════════════ */
+:root,[data-theme="dark"]{
+  --bg:#0f1117;--sidebar:#1a1d27;--surface:#212535;--surface2:#2a2e42;
+  --accent:#6366f1;--accent2:#818cf8;--text:#e8eaf6;--text2:#9498b8;--text3:#5c6080;
+  --border:#2e3250;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#38bdf8;
+  --shadow:0 4px 24px rgba(0,0,0,.4);--radius:12px;--radius-sm:8px;
+}
+[data-theme="light"]{
+  --bg:#f5f7fa;--sidebar:#ffffff;--surface:#ffffff;--surface2:#f0f2f8;
+  --accent:#4f46e5;--accent2:#7c73f5;--text:#1e2040;--text2:#6b7280;--text3:#9ca3af;
+  --border:#e5e7eb;--success:#16a34a;--warning:#d97706;--danger:#dc2626;--info:#0284c7;
+  --shadow:0 2px 16px rgba(0,0,0,.08);
+}
+[data-theme="ocean"]{
+  --bg:#0d1b2a;--sidebar:#1b3a5c;--surface:#1e4b72;--surface2:#163755;
+  --accent:#00b4d8;--accent2:#48cae4;--text:#caf0f8;--text2:#90e0ef;--text3:#5abfcf;
+  --border:#1e4060;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#00b4d8;
+  --shadow:0 4px 24px rgba(0,0,0,.5);
+}
+[data-theme="forest"]{
+  --bg:#1a2e1a;--sidebar:#2d4a2d;--surface:#2a3d2a;--surface2:#243424;
+  --accent:#4ade80;--accent2:#86efac;--text:#dcfce7;--text2:#86efac;--text3:#4ade80;
+  --border:#365036;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#38bdf8;
+  --shadow:0 4px 24px rgba(0,0,0,.5);
+}
+[data-theme="sunset"]{
+  --bg:#1f1411;--sidebar:#2e1f1a;--surface:#3a2820;--surface2:#2a1e18;
+  --accent:#fb923c;--accent2:#fdba74;--text:#fff7ed;--text2:#fed7aa;--text3:#fb923c;
+  --border:#5a3828;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#38bdf8;
+  --shadow:0 4px 24px rgba(0,0,0,.5);
+}
+[data-theme="royal"]{
+  --bg:#0f0f23;--sidebar:#1e1e3f;--surface:#26265a;--surface2:#1e1e48;
+  --accent:#a855f7;--accent2:#c084fc;--text:#ede9fe;--text2:#c4b5fd;--text3:#a855f7;
+  --border:#36366a;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#38bdf8;
+  --shadow:0 4px 24px rgba(0,0,0,.5);
+}
+[data-theme="crimson"]{
+  --bg:#1a0f0f;--sidebar:#2e1a1a;--surface:#3a2020;--surface2:#2a1818;
+  --accent:#ef4444;--accent2:#f87171;--text:#fef2f2;--text2:#fecaca;--text3:#ef4444;
+  --border:#5a2828;--success:#22c55e;--warning:#f59e0b;--danger:#ef4444;--info:#38bdf8;
+  --shadow:0 4px 24px rgba(0,0,0,.5);
+}
+
+/* ══════════════════════════════════════════════════
+   BASE RESET & TYPOGRAPHY
+══════════════════════════════════════════════════ */
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);font-size:14px;
+  transition:background .3s,color .3s;}
+*{transition:background-color .3s,border-color .3s,color .2s;}
+::-webkit-scrollbar{width:5px;height:5px;}
+::-webkit-scrollbar-track{background:var(--surface);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+
+/* ══════════════════════════════════════════════════
+   LAYOUT
+══════════════════════════════════════════════════ */
+.app{display:flex;height:100vh;}
+.sidebar{width:260px;min-width:260px;background:var(--sidebar);border-right:1px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;z-index:100;box-shadow:var(--shadow);}
+.main-area{flex:1;display:flex;flex-direction:column;overflow:hidden;}
+.header{height:60px;background:var(--sidebar);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;}
+.content{flex:1;overflow-y:auto;padding:24px;}
+
+/* ══════════════════════════════════════════════════
+   SIDEBAR
+══════════════════════════════════════════════════ */
+.sidebar-brand{padding:20px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;}
+.brand-logo{width:38px;height:38px;background:var(--accent);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;
+  font-size:15px;font-weight:500;color:#fff;flex-shrink:0;letter-spacing:-1px;}
+.brand-name{font-size:13px;font-weight:600;color:var(--text);line-height:1.3;}
+.brand-sub{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;}
+
+.nav-scroll{flex:1;overflow-y:auto;padding:12px 0;}
+.nav-section{margin-bottom:4px;}
+.nav-section-title{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;
+  letter-spacing:1px;padding:10px 20px 4px;}
+.nav-item{display:flex;align-items:center;gap:10px;padding:9px 16px 9px 20px;cursor:pointer;
+  color:var(--text2);font-size:13px;font-weight:400;border-left:3px solid transparent;
+  transition:all .2s;position:relative;user-select:none;}
+.nav-item:hover{background:var(--surface);color:var(--text);border-left-color:var(--border);}
+.nav-item.active{background:var(--surface);color:var(--accent);border-left-color:var(--accent);font-weight:500;}
+.nav-item i{width:18px;text-align:center;font-size:13px;}
+.nav-badge{margin-left:auto;background:var(--danger);color:#fff;border-radius:10px;
+  padding:1px 7px;font-size:10px;font-weight:600;}
+
+.sidebar-footer{padding:12px;border-top:1px solid var(--border);}
+.theme-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px;}
+.theme-pills{display:flex;gap:6px;flex-wrap:wrap;}
+.theme-pill{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;
+  transition:transform .2s,border-color .2s;flex-shrink:0;}
+.theme-pill:hover{transform:scale(1.15);}
+.theme-pill.active{border-color:var(--text);transform:scale(1.1);}
+.tp-dark{background:#6366f1;}
+.tp-light{background:#4f46e5;}
+.tp-ocean{background:#00b4d8;}
+.tp-forest{background:#4ade80;}
+.tp-sunset{background:#fb923c;}
+.tp-royal{background:#a855f7;}
+.tp-crimson{background:#ef4444;}
+
+/* ══════════════════════════════════════════════════
+   HEADER
+══════════════════════════════════════════════════ */
+.header-left{display:flex;align-items:center;gap:10px;}
+.header-title{font-size:17px;font-weight:600;color:var(--text);}
+.header-breadcrumb{font-size:12px;color:var(--text3);}
+.header-right{display:flex;align-items:center;gap:12px;}
+.clock{font-family:'DM Mono',monospace;font-size:13px;color:var(--text2);background:var(--surface);
+  padding:4px 12px;border-radius:20px;border:1px solid var(--border);}
+.header-avatar{width:36px;height:36px;border-radius:50%;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;
+  color:#fff;cursor:pointer;}
+.search-btn{background:var(--surface);border:1px solid var(--border);color:var(--text2);
+  padding:6px 14px;border-radius:20px;cursor:pointer;font-size:12px;display:flex;align-items:center;gap:6px;}
+.search-btn:hover{border-color:var(--accent);color:var(--accent);}
+
+/* ══════════════════════════════════════════════════
+   PAGE HEADER
+══════════════════════════════════════════════════ */
+.page-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.page-title{font-size:22px;font-weight:700;color:var(--text);}
+.page-subtitle{font-size:13px;color:var(--text3);margin-top:2px;}
+
+/* ══════════════════════════════════════════════════
+   CARDS
+══════════════════════════════════════════════════ */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:20px;}
+.card-sm{padding:16px;}
+
+/* ══════════════════════════════════════════════════
+   KPI CARDS
+══════════════════════════════════════════════════ */
+.kpi-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:16px;margin-bottom:24px;}
+.kpi-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+  padding:18px 20px;display:flex;flex-direction:column;gap:8px;position:relative;overflow:hidden;}
+.kpi-card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--accent);opacity:.7;}
+.kpi-card.success::before{background:var(--success);}
+.kpi-card.warning::before{background:var(--warning);}
+.kpi-card.danger::before{background:var(--danger);}
+.kpi-card.info::before{background:var(--info);}
+.kpi-icon{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  font-size:16px;margin-bottom:4px;}
+.kpi-icon.accent{background:rgba(99,102,241,.15);color:var(--accent);}
+.kpi-icon.success{background:rgba(34,197,94,.15);color:var(--success);}
+.kpi-icon.warning{background:rgba(245,158,11,.15);color:var(--warning);}
+.kpi-icon.danger{background:rgba(239,68,68,.15);color:var(--danger);}
+.kpi-icon.info{background:rgba(56,189,248,.15);color:var(--info);}
+.kpi-label{font-size:12px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px;}
+.kpi-value{font-size:26px;font-weight:700;color:var(--text);font-family:'DM Mono',monospace;line-height:1;}
+.kpi-sub{font-size:11px;color:var(--text3);}
+
+/* ══════════════════════════════════════════════════
+   CHARTS ROW
+══════════════════════════════════════════════════ */
+.charts-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:24px;}
+.chart-container{position:relative;height:220px;}
+
+/* ══════════════════════════════════════════════════
+   TABLES
+══════════════════════════════════════════════════ */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;}
+thead{background:var(--surface2);}
+th{padding:10px 14px;text-align:left;font-size:11px;font-weight:600;color:var(--text3);
+  text-transform:uppercase;letter-spacing:.5px;white-space:nowrap;border-bottom:1px solid var(--border);}
+td{padding:11px 14px;font-size:13px;color:var(--text2);border-bottom:1px solid var(--border);
+  vertical-align:middle;white-space:nowrap;}
+tr:hover td{background:var(--surface2);}
+tr:last-child td{border-bottom:none;}
+
+/* ══════════════════════════════════════════════════
+   BADGES
+══════════════════════════════════════════════════ */
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;gap:4px;}
+.badge-success{background:rgba(34,197,94,.15);color:var(--success);}
+.badge-warning{background:rgba(245,158,11,.15);color:var(--warning);}
+.badge-danger{background:rgba(239,68,68,.15);color:var(--danger);}
+.badge-info{background:rgba(56,189,248,.15);color:var(--info);}
+.badge-accent{background:rgba(99,102,241,.15);color:var(--accent2);}
+.badge-gray{background:var(--surface2);color:var(--text3);}
+
+/* ══════════════════════════════════════════════════
+   BUTTONS
+══════════════════════════════════════════════════ */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 16px;border-radius:var(--radius-sm);
+  font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .2s;font-family:'Sora',sans-serif;}
+.btn-primary{background:var(--accent);color:#fff;}
+.btn-primary:hover{opacity:.88;transform:translateY(-1px);}
+.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--border);}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent);background:rgba(99,102,241,.06);}
+.btn-danger{background:rgba(239,68,68,.15);color:var(--danger);border:1px solid rgba(239,68,68,.3);}
+.btn-danger:hover{background:var(--danger);color:#fff;}
+.btn-success{background:rgba(34,197,94,.15);color:var(--success);border:1px solid rgba(34,197,94,.3);}
+.btn-success:hover{background:var(--success);color:#fff;}
+.btn-sm{padding:5px 12px;font-size:12px;}
+.btn-icon{width:32px;height:32px;padding:0;display:inline-flex;align-items:center;justify-content:center;border-radius:var(--radius-sm);}
+
+/* ══════════════════════════════════════════════════
+   FORMS
+══════════════════════════════════════════════════ */
+.form-group{display:flex;flex-direction:column;gap:6px;margin-bottom:16px;}
+.form-label{font-size:12px;font-weight:600;color:var(--text2);text-transform:uppercase;letter-spacing:.4px;}
+.form-control{background:var(--surface2);border:1px solid var(--border);color:var(--text);
+  padding:10px 14px;border-radius:var(--radius-sm);font-size:13px;font-family:'Sora',sans-serif;
+  outline:none;width:100%;}
+.form-control:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(99,102,241,.15);}
+.form-control::placeholder{color:var(--text3);}
+select.form-control option{background:var(--surface2);color:var(--text);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+.form-row-3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;}
+
+/* ══════════════════════════════════════════════════
+   FILTERS BAR
+══════════════════════════════════════════════════ */
+.filters{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px;}
+.filters .form-control{width:auto;}
+.search-input{flex:1;min-width:200px;max-width:320px;}
+
+/* ══════════════════════════════════════════════════
+   MODAL
+══════════════════════════════════════════════════ */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;
+  display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;pointer-events:none;transition:opacity .2s;}
+.modal-overlay.open{opacity:1;pointer-events:all;}
+.modal{background:var(--sidebar);border:1px solid var(--border);border-radius:var(--radius);
+  width:100%;max-width:600px;max-height:90vh;overflow-y:auto;box-shadow:var(--shadow);
+  transform:scale(.95);transition:transform .2s;}
+.modal-overlay.open .modal{transform:scale(1);}
+.modal-lg{max-width:800px;}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;
+  border-bottom:1px solid var(--border);}
+.modal-title{font-size:16px;font-weight:600;color:var(--text);}
+.modal-close{background:none;border:none;color:var(--text3);cursor:pointer;font-size:18px;
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;}
+.modal-close:hover{background:var(--surface2);color:var(--text);}
+.modal-body{padding:24px;}
+.modal-footer{padding:16px 24px;border-top:1px solid var(--border);display:flex;gap:10px;justify-content:flex-end;}
+
+/* ══════════════════════════════════════════════════
+   TOAST
+══════════════════════════════════════════════════ */
+.toast-container{position:fixed;top:20px;right:20px;z-index:2000;display:flex;flex-direction:column;gap:8px;}
+.toast{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);
+  padding:12px 16px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;
+  min-width:280px;max-width:380px;animation:slideIn .3s ease;font-size:13px;}
+.toast i{font-size:16px;}
+.toast.success{border-left:3px solid var(--success);}
+.toast.success i{color:var(--success);}
+.toast.error{border-left:3px solid var(--danger);}
+.toast.error i{color:var(--danger);}
+.toast.warning{border-left:3px solid var(--warning);}
+.toast.warning i{color:var(--warning);}
+.toast.info{border-left:3px solid var(--info);}
+.toast.info i{color:var(--info);}
+@keyframes slideIn{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+@keyframes slideOut{from{transform:translateX(0);opacity:1}to{transform:translateX(100%);opacity:0}}
+
+/* ══════════════════════════════════════════════════
+   PAGINATION
+══════════════════════════════════════════════════ */
+.pagination{display:flex;align-items:center;gap:6px;justify-content:flex-end;margin-top:16px;}
+.page-btn{width:32px;height:32px;border-radius:6px;border:1px solid var(--border);background:var(--surface);
+  color:var(--text2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;}
+.page-btn:hover,.page-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.page-btn:disabled{opacity:.4;cursor:default;}
+
+/* ══════════════════════════════════════════════════
+   SKELETON LOADER
+══════════════════════════════════════════════════ */
+.skeleton{background:linear-gradient(90deg,var(--surface) 25%,var(--surface2) 50%,var(--surface) 75%);
+  background-size:200%;animation:shimmer 1.4s infinite;border-radius:4px;}
+@keyframes shimmer{0%{background-position:200%}100%{background-position:-200%}}
+
+/* ══════════════════════════════════════════════════
+   SECTION PAGES (fade-in)
+══════════════════════════════════════════════════ */
+.section{display:none;animation:fadeIn .25s ease;}
+.section.active{display:block;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ══════════════════════════════════════════════════
+   TOGGLE SWITCH
+══════════════════════════════════════════════════ */
+.toggle{position:relative;display:inline-block;width:44px;height:24px;}
+.toggle input{opacity:0;width:0;height:0;}
+.slider{position:absolute;inset:0;background:var(--border);border-radius:24px;cursor:pointer;transition:.3s;}
+.slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;bottom:3px;
+  background:#fff;border-radius:50%;transition:.3s;}
+input:checked + .slider{background:var(--accent);}
+input:checked + .slider::before{transform:translateX(20px);}
+
+/* ══════════════════════════════════════════════════
+   PAYMENT CYCLE TIMELINE
+══════════════════════════════════════════════════ */
+.cycle-item{display:flex;align-items:center;gap:14px;padding:14px;border-radius:var(--radius-sm);
+  border:1px solid var(--border);background:var(--surface);margin-bottom:10px;}
+.cycle-urgency{width:12px;height:12px;border-radius:50%;flex-shrink:0;}
+.cycle-urgency.overdue{background:var(--danger);}
+.cycle-urgency.soon{background:var(--warning);}
+.cycle-urgency.week{background:#f59e0b;}
+.cycle-urgency.ok{background:var(--success);}
+.cycle-days{font-size:11px;font-weight:600;width:80px;flex-shrink:0;}
+.cycle-days.overdue{color:var(--danger);}
+.cycle-days.soon{color:var(--warning);}
+.cycle-days.ok{color:var(--success);}
+
+/* ══════════════════════════════════════════════════
+   MIS SCORE BARS
+══════════════════════════════════════════════════ */
+.score-bar-wrap{height:8px;background:var(--surface2);border-radius:4px;overflow:hidden;}
+.score-bar{height:100%;border-radius:4px;transition:width .6s ease;}
+.score-excellent{background:var(--success);}
+.score-good{background:var(--info);}
+.score-average{background:var(--warning);}
+.score-poor{background:var(--danger);}
+
+/* ══════════════════════════════════════════════════
+   PERMISSION MATRIX
+══════════════════════════════════════════════════ */
+.perm-table th,.perm-table td{text-align:center;}
+.perm-table td:first-child{text-align:left;}
+
+/* ══════════════════════════════════════════════════
+   PROFILE CARD
+══════════════════════════════════════════════════ */
+.profile-avatar{width:80px;height:80px;border-radius:50%;background:var(--accent);
+  display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:700;color:#fff;
+  margin:0 auto 16px;border:3px solid var(--border);}
+
+/* ══════════════════════════════════════════════════
+   LEDGER
+══════════════════════════════════════════════════ */
+.ledger-debit{color:var(--danger);}
+.ledger-credit{color:var(--success);}
+
+/* ══════════════════════════════════════════════════
+   SEARCH MODAL
+══════════════════════════════════════════════════ */
+.search-modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:3000;
+  display:flex;align-items:flex-start;justify-content:center;padding-top:80px;
+  opacity:0;pointer-events:none;transition:opacity .2s;}
+.search-modal-overlay.open{opacity:1;pointer-events:all;}
+.search-modal{background:var(--sidebar);border:1px solid var(--border);border-radius:var(--radius);
+  width:100%;max-width:560px;box-shadow:var(--shadow);}
+.search-modal-input{width:100%;background:transparent;border:none;padding:18px 20px;
+  font-size:16px;color:var(--text);font-family:'Sora',sans-serif;outline:none;}
+.search-results{border-top:1px solid var(--border);max-height:320px;overflow-y:auto;}
+.search-result-item{padding:12px 20px;cursor:pointer;display:flex;align-items:center;gap:10px;
+  color:var(--text2);font-size:13px;}
+.search-result-item:hover{background:var(--surface);color:var(--text);}
+
+/* ══════════════════════════════════════════════════
+   PRINT STYLES
+══════════════════════════════════════════════════ */
+@media print{
+  .sidebar,.header,.filters,.btn,.pagination,.modal-overlay{display:none!important;}
+  .content{padding:0;overflow:visible;}
+  body{background:#fff;color:#000;}
+  .card{border:1px solid #ccc;box-shadow:none;}
+  th,td{color:#000;}
+}
+
+/* ══════════════════════════════════════════════════
+   MISC UTILS
+══════════════════════════════════════════════════ */
+.flex{display:flex;}.flex-between{justify-content:space-between;}.flex-center{align-items:center;}
+.gap-8{gap:8px;}.gap-12{gap:12px;}.gap-16{gap:16px;}
+.mt-8{margin-top:8px;}.mt-16{margin-top:16px;}.mt-24{margin-top:24px;}
+.mb-16{margin-bottom:16px;}.mb-24{margin-bottom:24px;}
+.text-right{text-align:right;}.text-center{text-align:center;}
+.text-muted{color:var(--text3);font-size:12px;}
+.bold{font-weight:600;}.mono{font-family:'DM Mono',monospace;}
+.fw{width:100%;}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:20px;}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;}
+.full{grid-column:1/-1;}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block;}
+.dot-success{background:var(--success);}.dot-danger{background:var(--danger);}
+.dot-warning{background:var(--warning);}.dot-info{background:var(--info);}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════
+  TOAST CONTAINER
+════════════════════════════════════════ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- ════════════════════════════════════════
+  SEARCH MODAL
+════════════════════════════════════════ -->
+<div class="search-modal-overlay" id="searchModalOverlay" onclick="closeSearch(event)">
+  <div class="search-modal" onclick="event.stopPropagation()">
+    <input class="search-modal-input" id="searchModalInput" placeholder="Search vendors, invoices, payments... (Ctrl+K)" oninput="globalSearch(this.value)">
+    <div class="search-results" id="searchResults"></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+  CONFIRM MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="confirmOverlay">
+  <div class="modal" style="max-width:420px">
+    <div class="modal-header">
+      <span class="modal-title" id="confirmTitle">Confirm Action</span>
+      <button class="modal-close" onclick="closeConfirm()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="confirmBody">Are you sure?</div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeConfirm()">Cancel</button>
+      <button class="btn btn-danger" id="confirmOkBtn">Confirm</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+  VENDOR MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="vendorModalOverlay">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="vendorModalTitle">Add Vendor</span>
+      <button class="modal-close" onclick="closeModal('vendorModalOverlay')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editVendorId">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Vendor ID</label><input class="form-control" id="vId" placeholder="V001"></div>
+        <div class="form-group"><label class="form-label">Company Name *</label><input class="form-control" id="vName" placeholder="ABC Solutions"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Category *</label>
+          <select class="form-control" id="vCategory">
+            <option value="">Select...</option>
+            <option>IT Services</option><option>Raw Materials</option><option>Logistics</option>
+            <option>Office Supplies</option><option>Maintenance</option><option>Marketing</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">GST Number</label><input class="form-control" id="vGST" placeholder="07AABCT1234A1Z5"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Contact Person</label><input class="form-control" id="vContact" placeholder="Name"></div>
+        <div class="form-group"><label class="form-label">Phone</label><input class="form-control" id="vPhone" placeholder="98XXXXXXXX"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="vEmail" type="email" placeholder="email@company.in"></div>
+        <div class="form-group"><label class="form-label">City</label><input class="form-control" id="vCity" placeholder="Delhi"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">State</label><input class="form-control" id="vState" placeholder="Delhi"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" id="vStatus"><option>Active</option><option>Inactive</option></select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Bank Account</label><input class="form-control" id="vBank" placeholder="1234567890"></div>
+        <div class="form-group"><label class="form-label">IFSC Code</label><input class="form-control" id="vIFSC" placeholder="HDFC0001234"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Payment Terms</label>
+          <select class="form-control" id="vPayTerms">
+            <option>Net 15</option><option>Net 30</option><option>Net 45</option><option>Net 60</option>
+          </select>
+        </div>
+        <div class="form-group"><label class="form-label">Join Date</label><input class="form-control" id="vJoinDate" type="date"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('vendorModalOverlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveVendor()"><i class="fas fa-save"></i> Save Vendor</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+  INVOICE MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="invoiceModalOverlay">
+  <div class="modal modal-lg">
+    <div class="modal-header">
+      <span class="modal-title" id="invoiceModalTitle">Add Invoice</span>
+      <button class="modal-close" onclick="closeModal('invoiceModalOverlay')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editInvoiceNo">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Invoice No</label><input class="form-control" id="iNo" placeholder="INV-2025-001"></div>
+        <div class="form-group"><label class="form-label">Vendor</label>
+          <select class="form-control" id="iVendor" onchange="fillInvoiceVendorName()"><option value="">Select Vendor...</option></select>
+        </div>
+      </div>
+      <div class="form-group"><label class="form-label">Items / Description</label><input class="form-control" id="iItems" placeholder="Service/goods description"></div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Base Amount (₹)</label><input class="form-control" id="iAmount" type="number" oninput="calcGST()" placeholder="0"></div>
+        <div class="form-group"><label class="form-label">GST Amount (₹)</label><input class="form-control" id="iGST" readonly placeholder="Auto"></div>
+        <div class="form-group"><label class="form-label">Total (₹)</label><input class="form-control" id="iTotal" readonly placeholder="Auto"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Invoice Date</label><input class="form-control" id="iDate" type="date"></div>
+        <div class="form-group"><label class="form-label">Due Date</label><input class="form-control" id="iDue" type="date"></div>
+        <div class="form-group"><label class="form-label">Status</label>
+          <select class="form-control" id="iStatus"><option>Pending</option><option>Paid</option><option>Overdue</option></select>
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('invoiceModalOverlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveInvoice()"><i class="fas fa-save"></i> Save Invoice</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+  PAYMENT MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="paymentModalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title">Add User</span>
+      <button class="modal-close" onclick="closeModal('paymentModalOverlay')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="editUserId">
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Full Name</label><input class="form-control" id="uName" placeholder="Full Name"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="uEmail" type="email" placeholder="user@jainco.in"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label class="form-label">Role</label>
+          <select class="form-control" id="uRole"><option>Admin</option><option>Manager</option><option>Accountant</option><option>Viewer</option></select>
+        </div>
+        <div class="form-group"><label class="form-label">Department</label><input class="form-control" id="uDept" placeholder="Finance"></div>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-control" id="uStatus"><option>Active</option><option>Inactive</option></select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-outline" onclick="closeModal('paymentModalOverlay')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveUser()"><i class="fas fa-save"></i> Save User</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+  MIS SCORE DETAIL MODAL
+════════════════════════════════════════ -->
+<div class="modal-overlay" id="misModalOverlay">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="misModalTitle">Vendor Score Details</span>
+      <button class="modal-close" onclick="closeModal('misModalOverlay')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="misModalBody"></div>
+    <div class="modal-footer"><button class="btn btn-outline" onclick="closeModal('misModalOverlay')">Close</button></div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════
+  APP SHELL
+════════════════════════════════════════ -->
+<div class="app">
+  <!-- SIDEBAR -->
+  <nav class="sidebar">
+    <div class="sidebar-brand">
+      <div class="brand-logo">JPC</div>
+      <div>
+        <div class="brand-name">Jainco Pvt Ltd</div>
+        <div class="brand-sub">Vendor Management</div>
+      </div>
+    </div>
+    <div class="nav-scroll">
+      <div class="nav-section">
+        <div class="nav-section-title">Core</div>
+        <div class="nav-item active" onclick="navigate('dashboard',this)"><i class="fas fa-home"></i> Main Dashboard</div>
+        <div class="nav-item" onclick="navigate('vendors',this)"><i class="fas fa-building"></i> Vendors</div>
+        <div class="nav-item" onclick="navigate('invoices',this)"><i class="fas fa-file-invoice"></i> Vendor Invoices <span class="nav-badge" id="overdueCount">0</span></div>
+        <div class="nav-item" onclick="navigate('payment-entry',this)"><i class="fas fa-credit-card"></i> Payment Entry</div>
+        <div class="nav-item" onclick="navigate('vendor-dashboard',this)"><i class="fas fa-chart-pie"></i> Vendor Dashboard</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Finance</div>
+        <div class="nav-item" onclick="navigate('ledger',this)"><i class="fas fa-book"></i> Ledger</div>
+        <div class="nav-item" onclick="navigate('archive',this)"><i class="fas fa-archive"></i> Archive</div>
+        <div class="nav-item" onclick="navigate('payment-cycle',this)"><i class="fas fa-sync-alt"></i> Payment Cycle</div>
+        <div class="nav-item" onclick="navigate('mis-score',this)"><i class="fas fa-chart-bar"></i> MIS Score</div>
+      </div>
+      <div class="nav-section">
+        <div class="nav-section-title">Settings</div>
+        <div class="nav-item" onclick="navigate('user-mgmt',this)"><i class="fas fa-users"></i> User Management</div>
+        <div class="nav-item" onclick="navigate('permissions',this)"><i class="fas fa-lock"></i> Permission Manager</div>
+        <div class="nav-item" onclick="navigate('email-settings',this)"><i class="fas fa-envelope"></i> Email Settings</div>
+        <div class="nav-item" onclick="navigate('profile',this)"><i class="fas fa-user-circle"></i> My Profile</div>
+        <div class="nav-item" onclick="navigate('admin',this)"><i class="fas fa-cog"></i> Admin Panel</div>
+      </div>
+    </div>
+    <div class="sidebar-footer">
+      <div class="theme-label">Theme</div>
+      <div class="theme-pills">
+        <div class="theme-pill tp-dark active" title="Dark" onclick="setTheme('dark',this)"></div>
+        <div class="theme-pill tp-light" title="Light" onclick="setTheme('light',this)"></div>
+        <div class="theme-pill tp-ocean" title="Ocean" onclick="setTheme('ocean',this)"></div>
+        <div class="theme-pill tp-forest" title="Forest" onclick="setTheme('forest',this)"></div>
+        <div class="theme-pill tp-sunset" title="Sunset" onclick="setTheme('sunset',this)"></div>
+        <div class="theme-pill tp-royal" title="Royal" onclick="setTheme('royal',this)"></div>
+        <div class="theme-pill tp-crimson" title="Crimson" onclick="setTheme('crimson',this)"></div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- MAIN AREA -->
+  <div class="main-area">
+    <header class="header">
+      <div class="header-left">
+        <div>
+          <div class="header-title" id="headerTitle">Dashboard</div>
+          <div class="header-breadcrumb" id="headerBreadcrumb">Jainco Pvt Ltd / Dashboard</div>
+        </div>
+      </div>
+      <div class="header-right">
+        <button class="search-btn" onclick="openSearch()"><i class="fas fa-search"></i> Search <span style="color:var(--text3);margin-left:4px">Ctrl+K</span></button>
+        <div class="clock" id="clock">09:00:00</div>
+        <div class="header-avatar" title="Anil Sharma">AS</div>
+      </div>
+    </header>
+
+    <div class="content" id="mainContent">
+
+      <!-- ════════ 1. DASHBOARD ════════ -->
+      <div class="section active" id="sec-dashboard">
+        <div class="page-header">
+          <div><div class="page-title">Main Dashboard</div><div class="page-subtitle">Welcome back, Anil! Here's your overview.</div></div>
+          <div class="flex gap-8"><button class="btn btn-outline btn-sm" onclick="loadDashboard()"><i class="fas fa-sync-alt"></i> Refresh</button></div>
+        </div>
+        <div class="kpi-grid" id="dashKPI"></div>
+        <div class="charts-row">
+          <div class="card"><div style="font-weight:600;margin-bottom:14px;font-size:14px">Monthly Payments (₹)</div><div class="chart-container"><canvas id="barChart"></canvas></div></div>
+          <div class="card"><div style="font-weight:600;margin-bottom:14px;font-size:14px">Vendor Categories</div><div class="chart-container"><canvas id="pieChart"></canvas></div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="flex flex-between flex-center mb-16"><span style="font-weight:600">Recent Transactions</span></div>
+            <div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Vendor</th><th>Amount</th><th>Status</th></tr></thead><tbody id="recentTxnTable"></tbody></table></div>
+          </div>
+          <div class="card">
+            <div class="flex flex-between flex-center mb-16"><span style="font-weight:600">Top 5 Vendors</span></div>
+            <div id="top5Vendors"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ 2. VENDORS ════════ -->
+      <div class="section" id="sec-vendors">
+        <div class="page-header">
+          <div><div class="page-title">Vendors</div><div class="page-subtitle">Manage all vendor accounts</div></div>
+          <div class="flex gap-8">
+            <button class="btn btn-outline btn-sm" onclick="exportVendorsCSV()"><i class="fas fa-download"></i> Export CSV</button>
+            <button class="btn btn-primary btn-sm" onclick="openVendorModal()"><i class="fas fa-plus"></i> Add Vendor</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="filters">
+            <input class="form-control search-input" id="vendorSearch" placeholder="Search vendors..." oninput="renderVendors()">
+            <select class="form-control" id="vendorCatFilter" onchange="renderVendors()">
+              <option value="">All Categories</option>
+              <option>IT Services</option><option>Raw Materials</option><option>Logistics</option>
+              <option>Office Supplies</option><option>Maintenance</option><option>Marketing</option>
+            </select>
+            <select class="form-control" id="vendorStatusFilter" onchange="renderVendors()">
+              <option value="">All Status</option><option>Active</option><option>Inactive</option>
+            </select>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>GST No</th><th>Contact</th><th>City</th><th>Status</th><th>Join Date</th><th>Actions</th></tr></thead>
+              <tbody id="vendorTable"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="vendorPagination"></div>
+          <div style="margin-top:8px;font-size:12px;color:var(--text3)" id="vendorCount"></div>
+        </div>
+      </div>
+
+      <!-- ════════ 3. INVOICES ════════ -->
+      <div class="section" id="sec-invoices">
+        <div class="page-header">
+          <div><div class="page-title">Vendor Invoices</div><div class="page-subtitle">Track all invoices and payment status</div></div>
+          <div class="flex gap-8">
+            <button class="btn btn-outline btn-sm" onclick="exportInvoicesCSV()"><i class="fas fa-download"></i> Export</button>
+            <button class="btn btn-primary btn-sm" onclick="openInvoiceModal()"><i class="fas fa-plus"></i> Add Invoice</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="filters">
+            <input class="form-control search-input" id="invSearch" placeholder="Search invoices..." oninput="renderInvoices()">
+            <select class="form-control" id="invStatusFilter" onchange="renderInvoices()">
+              <option value="">All Status</option><option>Paid</option><option>Pending</option><option>Overdue</option>
+            </select>
+            <input class="form-control" id="invDateFrom" type="date" onchange="renderInvoices()">
+            <input class="form-control" id="invDateTo" type="date" onchange="renderInvoices()">
+            <button class="btn btn-outline btn-sm" onclick="bulkMarkPaid()"><i class="fas fa-check"></i> Bulk Mark Paid</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th><input type="checkbox" id="invSelectAll" onchange="toggleAllInvoices(this)"></th><th>Invoice No</th><th>Vendor</th><th>Amount</th><th>GST</th><th>Total</th><th>Issue Date</th><th>Due Date</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="invoiceTable"></tbody>
+            </table>
+          </div>
+          <div class="pagination" id="invoicePagination"></div>
+        </div>
+      </div>
+
+      <!-- ════════ 4. PAYMENT ENTRY ════════ -->
+      <div class="section" id="sec-payment-entry">
+        <div class="page-header">
+          <div><div class="page-title">Payment Entry</div><div class="page-subtitle">Record vendor payments</div></div>
+        </div>
+        <div class="two-col">
+          <div>
+            <div class="card" style="margin-bottom:20px">
+              <div style="font-weight:600;margin-bottom:16px">New Payment</div>
+              <div class="form-group"><label class="form-label">Select Vendor *</label>
+                <select class="form-control" id="payVendor" onchange="loadVendorInvoices()"><option value="">Select Vendor...</option></select>
+              </div>
+              <div class="form-group"><label class="form-label">Invoice Reference</label>
+                <select class="form-control" id="payInvoice" onchange="fillPaymentAmount()"><option value="">Select Invoice...</option></select>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Balance Due (₹)</label>
+                  <input class="form-control" id="payBalance" readonly placeholder="0">
+                </div>
+                <div class="form-group"><label class="form-label">Payment Amount (₹) *</label>
+                  <input class="form-control" id="payAmount" type="number" placeholder="0">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group"><label class="form-label">Payment Mode *</label>
+                  <select class="form-control" id="payMode">
+                    <option>NEFT</option><option>RTGS</option><option>Cheque</option><option>Cash</option><option>UPI</option>
+                  </select>
+                </div>
+                <div class="form-group"><label class="form-label">Payment Date *</label>
+                  <input class="form-control" id="payDate" type="date">
+                </div>
+              </div>
+              <div class="form-group"><label class="form-label">Bank Reference No</label>
+                <input class="form-control" id="payRef" placeholder="TXN12345">
+              </div>
+              <div class="form-group"><label class="form-label">Remarks</label>
+                <input class="form-control" id="payRemarks" placeholder="Optional notes">
+              </div>
+              <button class="btn btn-primary fw" onclick="recordPayment()"><i class="fas fa-save"></i> Record Payment</button>
+            </div>
+          </div>
+          <div>
+            <div class="kpi-grid" style="grid-template-columns:1fr 1fr;margin-bottom:16px" id="payKPIs"></div>
+            <div class="card">
+              <div style="font-weight:600;margin-bottom:12px">Recent Payments</div>
+              <div class="table-wrap"><table><thead><tr><th>Pay ID</th><th>Vendor</th><th>Amount</th><th>Mode</th><th>Date</th></tr></thead>
+              <tbody id="recentPayTable"></tbody></table></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ 5. VENDOR DASHBOARD ════════ -->
+      <div class="section" id="sec-vendor-dashboard">
+        <div class="page-header">
+          <div><div class="page-title">Vendor Dashboard</div><div class="page-subtitle">Detailed per-vendor analysis</div></div>
+          <div class="form-group" style="margin:0;min-width:280px">
+            <select class="form-control" id="vdVendorSelect" onchange="loadVendorDashboard()">
+              <option value="">Select a Vendor...</option>
+            </select>
+          </div>
+        </div>
+        <div id="vendorDashContent">
+          <div style="text-align:center;padding:60px;color:var(--text3)"><i class="fas fa-building" style="font-size:40px;margin-bottom:12px;display:block"></i>Select a vendor to view detailed dashboard</div>
+        </div>
+      </div>
+
+      <!-- ════════ 6. LEDGER ════════ -->
+      <div class="section" id="sec-ledger">
+        <div class="page-header">
+          <div><div class="page-title">Ledger</div><div class="page-subtitle">Double-entry accounts ledger</div></div>
+          <div class="flex gap-8">
+            <button class="btn btn-outline btn-sm" onclick="window.print()"><i class="fas fa-print"></i> Print</button>
+            <button class="btn btn-outline btn-sm" onclick="exportLedgerCSV()"><i class="fas fa-download"></i> Export</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="filters">
+            <select class="form-control" id="ledgerVendor" onchange="renderLedger()">
+              <option value="">All Vendors</option>
+            </select>
+            <input class="form-control" id="ledgerFrom" type="date" onchange="renderLedger()">
+            <input class="form-control" id="ledgerTo" type="date" onchange="renderLedger()">
+            <div class="form-group" style="margin:0;display:flex;align-items:center;gap:8px">
+              <label class="form-label" style="white-space:nowrap;margin:0">Opening Bal ₹</label>
+              <input class="form-control" id="openingBal" type="number" value="0" style="width:120px" onchange="renderLedger()">
+            </div>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Date</th><th>Description</th><th>Vendor</th><th>Debit (₹)</th><th>Credit (₹)</th><th>Balance (₹)</th></tr></thead>
+              <tbody id="ledgerTable"></tbody>
+            </table>
+          </div>
+          <div id="ledgerSummary" style="margin-top:16px;padding:16px;background:var(--surface2);border-radius:var(--radius-sm);display:flex;gap:32px"></div>
+        </div>
+      </div>
+
+      <!-- ════════ 7. ARCHIVE ════════ -->
+      <div class="section" id="sec-archive">
+        <div class="page-header">
+          <div><div class="page-title">Archive</div><div class="page-subtitle">Archived vendors and invoices</div></div>
+        </div>
+        <div class="card">
+          <div class="flex gap-8 mb-16">
+            <button class="btn btn-outline btn-sm" onclick="showArchiveTab('vendors')" id="archVTab">Archived Vendors</button>
+            <button class="btn btn-outline btn-sm" onclick="showArchiveTab('invoices')" id="archITab">Archived Invoices</button>
+          </div>
+          <div id="archiveContent"></div>
+        </div>
+      </div>
+
+      <!-- ════════ 8. PAYMENT CYCLE ════════ -->
+      <div class="section" id="sec-payment-cycle">
+        <div class="page-header">
+          <div><div class="page-title">Payment Cycle</div><div class="page-subtitle">Upcoming payment due dates — next 30 days</div></div>
+        </div>
+        <div class="kpi-grid" style="grid-template-columns:repeat(4,1fr);margin-bottom:24px" id="cycleKPIs"></div>
+        <div class="card">
+          <div class="flex flex-between flex-center mb-16">
+            <span style="font-weight:600">Payment Due Timeline</span>
+            <button class="btn btn-success btn-sm" onclick="bulkMarkPaidCycle()"><i class="fas fa-check-double"></i> Bulk Mark Paid</button>
+          </div>
+          <div id="cycleList"></div>
+        </div>
+      </div>
+
+      <!-- ════════ 9. MIS SCORE ════════ -->
+      <div class="section" id="sec-mis-score">
+        <div class="page-header">
+          <div><div class="page-title">MIS Score</div><div class="page-subtitle">Vendor performance scorecard</div></div>
+        </div>
+        <div class="two-col" style="margin-bottom:24px">
+          <div class="card">
+            <div style="font-weight:600;margin-bottom:14px">Score Distribution</div>
+            <div class="chart-container" style="height:200px"><canvas id="misBarChart"></canvas></div>
+          </div>
+          <div class="card">
+            <div style="font-weight:600;margin-bottom:14px">Rating Legend</div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div class="flex flex-center gap-8"><span class="badge badge-success">Excellent</span><span style="font-size:12px;color:var(--text3)">Score 80–100: Top performer</span></div>
+              <div class="flex flex-center gap-8"><span class="badge badge-info">Good</span><span style="font-size:12px;color:var(--text3)">Score 60–79: Above average</span></div>
+              <div class="flex flex-center gap-8"><span class="badge badge-warning">Average</span><span style="font-size:12px;color:var(--text3)">Score 40–59: Needs improvement</span></div>
+              <div class="flex flex-center gap-8"><span class="badge badge-danger">Poor</span><span style="font-size:12px;color:var(--text3)">Score &lt;40: Critical attention needed</span></div>
+            </div>
+            <div style="margin-top:16px;font-size:12px;color:var(--text3)">
+              <div>• Payment Timeliness: 30%</div>
+              <div>• Invoice Accuracy: 25%</div>
+              <div>• Response Time: 20%</div>
+              <div>• Compliance: 15%</div>
+              <div>• Dispute Rate: 10%</div>
+            </div>
+          </div>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Vendor</th><th>Category</th><th>Score</th><th>Rating</th><th>Timeliness</th><th>Accuracy</th><th>Response</th><th>Trend</th><th>Action</th></tr></thead>
+              <tbody id="misTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ 10. USER MANAGEMENT ════════ -->
+      <div class="section" id="sec-user-mgmt">
+        <div class="page-header">
+          <div><div class="page-title">User Management</div><div class="page-subtitle">Manage system users and roles</div></div>
+          <button class="btn btn-primary btn-sm" onclick="openUserModal()"><i class="fas fa-plus"></i> Add User</button>
+        </div>
+        <div class="card">
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>User ID</th><th>Name</th><th>Email</th><th>Role</th><th>Department</th><th>Last Login</th><th>Status</th><th>Actions</th></tr></thead>
+              <tbody id="userTable"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mt-24">
+          <div style="font-weight:600;margin-bottom:12px">Activity Log (Last 20 Actions)</div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Time</th><th>User</th><th>Action</th><th>Module</th></tr></thead>
+              <tbody id="activityLog"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ 11. PERMISSION MANAGER ════════ -->
+      <div class="section" id="sec-permissions">
+        <div class="page-header">
+          <div><div class="page-title">Permission Manager</div><div class="page-subtitle">Role-based access control</div></div>
+          <button class="btn btn-primary btn-sm" onclick="savePermissions()"><i class="fas fa-save"></i> Save Permissions</button>
+        </div>
+        <div class="card">
+          <div class="flex gap-8 mb-16">
+            <button class="btn btn-outline btn-sm" onclick="applyTemplate('admin')">Admin Template</button>
+            <button class="btn btn-outline btn-sm" onclick="applyTemplate('manager')">Manager Template</button>
+            <button class="btn btn-outline btn-sm" onclick="applyTemplate('accountant')">Accountant Template</button>
+            <button class="btn btn-outline btn-sm" onclick="applyTemplate('viewer')">Viewer Template</button>
+          </div>
+          <div class="table-wrap" id="permissionMatrix"></div>
+        </div>
+      </div>
+
+      <!-- ════════ 12. EMAIL SETTINGS ════════ -->
+      <div class="section" id="sec-email-settings">
+        <div class="page-header">
+          <div><div class="page-title">Email Settings</div><div class="page-subtitle">Configure email delivery</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div style="font-weight:600;margin-bottom:16px">SMTP Configuration</div>
+            <div class="form-group"><label class="form-label">SMTP Host</label><input class="form-control" id="smtpHost" placeholder="smtp.gmail.com" value="smtp.gmail.com"></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Port</label><input class="form-control" id="smtpPort" value="587" type="number"></div>
+              <div class="form-group"><label class="form-label">Encryption</label><select class="form-control" id="smtpEnc"><option>TLS</option><option>SSL</option><option>None</option></select></div>
+            </div>
+            <div class="form-group"><label class="form-label">Username</label><input class="form-control" id="smtpUser" placeholder="accounts@jainco.in"></div>
+            <div class="form-group"><label class="form-label">Password</label><input class="form-control" id="smtpPass" type="password" placeholder="App password"></div>
+            <div class="form-group"><label class="form-label">From Name</label><input class="form-control" id="smtpFrom" value="Jainco Pvt Ltd Accounts"></div>
+            <div class="flex gap-8">
+              <button class="btn btn-outline fw" onclick="testEmail()"><i class="fas fa-paper-plane"></i> Send Test Email</button>
+              <button class="btn btn-primary fw" onclick="saveEmailSettings()"><i class="fas fa-save"></i> Save</button>
+            </div>
+          </div>
+          <div class="card">
+            <div style="font-weight:600;margin-bottom:16px">Email Templates</div>
+            <div class="form-group"><label class="form-label">Template</label>
+              <select class="form-control" id="emailTemplate" onchange="loadTemplate()">
+                <option value="reminder">Payment Reminder</option>
+                <option value="due">Invoice Due</option>
+                <option value="welcome">Welcome Vendor</option>
+                <option value="confirm">Payment Confirmation</option>
+              </select>
+            </div>
+            <div class="form-group"><label class="form-label">Subject</label><input class="form-control" id="tmplSubject"></div>
+            <div class="form-group"><label class="form-label">Body</label><textarea class="form-control" id="tmplBody" rows="8" style="resize:vertical"></textarea></div>
+            <button class="btn btn-primary fw" onclick="saveTemplate()"><i class="fas fa-save"></i> Save Template</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ 13. MY PROFILE ════════ -->
+      <div class="section" id="sec-profile">
+        <div class="page-header">
+          <div><div class="page-title">My Profile</div><div class="page-subtitle">Manage your account settings</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div class="profile-avatar" id="profileAvatar">AS</div>
+            <div class="form-group"><label class="form-label">Full Name</label><input class="form-control" id="profName" value="Anil Sharma"></div>
+            <div class="form-group"><label class="form-label">Email</label><input class="form-control" id="profEmail" value="anil.sharma@jainco.in" type="email"></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Phone</label><input class="form-control" id="profPhone" value="9811234567"></div>
+              <div class="form-group"><label class="form-label">Designation</label><input class="form-control" id="profDesig" value="System Administrator"></div>
+            </div>
+            <div class="form-group"><label class="form-label">Department</label><input class="form-control" id="profDept" value="Management"></div>
+            <button class="btn btn-primary fw" onclick="saveProfile()"><i class="fas fa-save"></i> Update Profile</button>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:20px">
+              <div style="font-weight:600;margin-bottom:16px">Change Password</div>
+              <div class="form-group"><label class="form-label">Current Password</label><input class="form-control" type="password" id="curPwd" placeholder="Current password"></div>
+              <div class="form-group"><label class="form-label">New Password</label><input class="form-control" type="password" id="newPwd" placeholder="New password"></div>
+              <div class="form-group"><label class="form-label">Confirm Password</label><input class="form-control" type="password" id="confPwd" placeholder="Confirm new password"></div>
+              <button class="btn btn-primary fw" onclick="changePassword()"><i class="fas fa-key"></i> Change Password</button>
+            </div>
+            <div class="card">
+              <div style="font-weight:600;margin-bottom:16px">Notification Preferences</div>
+              <div style="display:flex;flex-direction:column;gap:14px">
+                <div class="flex flex-between flex-center"><span style="font-size:13px">Payment Due Alerts</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+                <div class="flex flex-between flex-center"><span style="font-size:13px">Invoice Received</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+                <div class="flex flex-between flex-center"><span style="font-size:13px">Overdue Reminders</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+                <div class="flex flex-between flex-center"><span style="font-size:13px">New Vendor Added</span><label class="toggle"><input type="checkbox"><span class="slider"></span></label></div>
+                <div class="flex flex-between flex-center"><span style="font-size:13px">Weekly MIS Report</span><label class="toggle"><input type="checkbox" checked><span class="slider"></span></label></div>
+              </div>
+              <button class="btn btn-primary fw mt-16" onclick="saveNotifPref()"><i class="fas fa-save"></i> Save Preferences</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ 14. ADMIN PANEL ════════ -->
+      <div class="section" id="sec-admin">
+        <div class="page-header">
+          <div><div class="page-title">Admin Panel</div><div class="page-subtitle">System configuration and management</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card">
+            <div style="font-weight:600;margin-bottom:16px">Company Settings</div>
+            <div class="form-group"><label class="form-label">Company Name</label><input class="form-control" id="compName" value="Jainco Pvt Ltd"></div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Currency</label><select class="form-control" id="currency"><option>INR (₹)</option><option>USD ($)</option><option>EUR (€)</option></select></div>
+              <div class="form-group"><label class="form-label">GST Rate (%)</label><input class="form-control" id="gstRate" type="number" value="18"></div>
+            </div>
+            <div class="form-row">
+              <div class="form-group"><label class="form-label">Financial Year Start</label><select class="form-control" id="fyStart"><option>April</option><option>January</option></select></div>
+              <div class="form-group"><label class="form-label">Payment Terms (default)</label><select class="form-control" id="defTerms"><option>Net 30</option><option>Net 15</option><option>Net 45</option></select></div>
+            </div>
+            <div class="form-group"><label class="form-label">Google Sheet URL</label><input class="form-control" id="sheetUrl" placeholder="Paste deployed Apps Script URL here" value=""></div>
+            <button class="btn btn-primary fw" onclick="saveAdminSettings()"><i class="fas fa-save"></i> Save Settings</button>
+          </div>
+          <div>
+            <div class="card" style="margin-bottom:20px">
+              <div style="font-weight:600;margin-bottom:16px">System Info</div>
+              <div id="sysInfo" style="font-size:13px;display:flex;flex-direction:column;gap:10px;color:var(--text2)"></div>
+            </div>
+            <div class="card">
+              <div style="font-weight:600;margin-bottom:16px">Data Management</div>
+              <div style="display:flex;flex-direction:column;gap:10px">
+                <button class="btn btn-outline fw" onclick="backupData()"><i class="fas fa-database"></i> Backup Data (Download JSON)</button>
+                <button class="btn btn-outline fw" onclick="syncGoogleSheet()"><i class="fas fa-sync"></i> Sync with Google Sheets</button>
+                <button class="btn btn-danger fw" onclick="clearAllData()"><i class="fas fa-trash-alt"></i> Clear All Data</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main-area -->
+</div><!-- /app -->
+
+<script>
+// ══════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════
+const CONFIG = {
+  SHEET_URL: "", // Paste your Google Apps Script Web App URL here
+  GST_RATE: 18,
+  COMPANY: "Jainco Pvt Ltd",
+  VERSION: "2.0.0"
+};
+
+// ══════════════════════════════════════════════════════════
+// STATE
+// ══════════════════════════════════════════════════════════
+let APP = {
+  vendors: [], invoices: [], payments: [], users: [],
+  archived_vendors: [], archived_invoices: [],
+  permissions: null,
+  vendorPage: 1, invoicePage: 1,
+  currentSection: 'dashboard',
+  activityLog: []
+};
+
+const ITEMS_PER_PAGE = 10;
+
+// ══════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════
+async function init() {
+  loadTheme();
+  startClock();
+  await loadData();
+  loadDashboard();
+  renderVendors();
+  renderInvoices();
+  loadPaymentPage();
+  populateVendorSelects();
+  renderLedger();
+  renderArchive();
+  renderPaymentCycle();
+  renderMIS();
+  renderUsers();
+  renderPermissions();
+  loadTemplate();
+  loadAdminInfo();
+  updateOverdueCount();
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey||e.metaKey) && e.key==='k') { e.preventDefault(); openSearch(); }
+    if (e.key==='Escape') { closeAllModals(); }
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// DATA LOADING
+// ══════════════════════════════════════════════════════════
+async function loadData() {
+  const saved = localStorage.getItem('jaincoData');
+  if (saved) {
+    try { const d=JSON.parse(saved); Object.assign(APP,d); return; } catch(e){}
+  }
+  try {
+    const r = await fetch('dummy-data.json');
+    if (r.ok) {
+      const d = await r.json();
+      APP.vendors = d.vendors || [];
+      APP.invoices = d.invoices || [];
+      APP.payments = d.payments || [];
+      APP.users = d.users || [];
+    }
+  } catch(e) { seedDemoData(); }
+  if (!APP.vendors.length) seedDemoData();
+  saveData();
+}
+
+function saveData() {
+  const d = { vendors:APP.vendors, invoices:APP.invoices, payments:APP.payments,
+    users:APP.users, archived_vendors:APP.archived_vendors, archived_invoices:APP.archived_invoices,
+    permissions:APP.permissions, activityLog:APP.activityLog };
+  localStorage.setItem('jaincoData', JSON.stringify(d));
+}
+
+async function fetchFromSheet(sheet) {
+  if (!CONFIG.SHEET_URL) return null;
+  try {
+    const r = await fetch(`${CONFIG.SHEET_URL}?sheet=${sheet}`);
+    const d = await r.json();
+    return d.success ? d.data : null;
+  } catch(e) { return null; }
+}
+
+function seedDemoData() {
+  APP.vendors = [
+    {VendorID:'V001',Name:'TechnoSoft Solutions',Category:'IT Services',GSTNo:'07AABCT1234A1Z5',ContactPerson:'Rajesh Kumar',Phone:'9811234567',Email:'rajesh@technosoft.in',City:'Delhi',State:'Delhi',Status:'Active',JoinDate:'2022-01-15',BankAccount:'1234567890',IFSC:'HDFC0001234',PaymentTerms:'Net 30'},
+    {VendorID:'V002',Name:'Bharat Logistics',Category:'Logistics',GSTNo:'27AABCB5678B1Z3',ContactPerson:'Suresh Mehta',Phone:'9022345678',Email:'suresh@bharatlogistics.in',City:'Mumbai',State:'Maharashtra',Status:'Active',JoinDate:'2021-11-20',BankAccount:'2345678901',IFSC:'ICIC0002345',PaymentTerms:'Net 15'},
+    {VendorID:'V003',Name:'GreenLeaf Materials',Category:'Raw Materials',GSTNo:'29AABCG9012C1Z1',ContactPerson:'Anitha Rao',Phone:'9845678901',Email:'anitha@greenleaf.in',City:'Bengaluru',State:'Karnataka',Status:'Active',JoinDate:'2022-03-10',BankAccount:'3456789012',IFSC:'SBIN0003456',PaymentTerms:'Net 45'},
+  ];
+  APP.invoices = [
+    {InvoiceNo:'INV-2025-001',VendorID:'V001',VendorName:'TechnoSoft Solutions',InvoiceDate:'2025-01-03',DueDate:'2025-02-02',Items:'IT Support Jan',Amount:155000,GSTAmount:27900,TotalAmount:182900,Status:'Paid',PaidDate:'2025-01-29',PaymentRef:'NEFT001'},
+    {InvoiceNo:'INV-2025-011',VendorID:'V001',VendorName:'TechnoSoft Solutions',InvoiceDate:'2025-04-01',DueDate:'2025-05-16',Items:'IT Support Apr',Amount:128000,GSTAmount:23040,TotalAmount:151040,Status:'Pending',PaidDate:'',PaymentRef:''},
+    {InvoiceNo:'INV-2025-014',VendorID:'V002',VendorName:'Bharat Logistics',InvoiceDate:'2025-04-02',DueDate:'2025-04-17',Items:'April Freight',Amount:38000,GSTAmount:6840,TotalAmount:44840,Status:'Overdue',PaidDate:'',PaymentRef:''},
+  ];
+  APP.payments = [
+    {PaymentID:'PAY-001',VendorID:'V001',InvoiceRef:'INV-2025-001',Amount:182900,PaymentMode:'NEFT',BankRef:'NEFT001',PaymentDate:'2025-01-29',ProcessedBy:'Admin',Remarks:'Full payment'},
+  ];
+  APP.users = [
+    {UserID:'U001',Name:'Anil Sharma',Email:'anil.sharma@jainco.in',Role:'Admin',Status:'Active',LastLogin:'2025-04-16 09:15',Department:'Management'},
+    {UserID:'U002',Name:'Priya Mehta',Email:'priya.mehta@jainco.in',Role:'Manager',Status:'Active',LastLogin:'2025-04-16 08:45',Department:'Finance'},
+  ];
+}
+
+// ══════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════
+function navigate(section, el) {
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  el.classList.add('active');
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  const sec = document.getElementById('sec-'+section);
+  if (sec) sec.classList.add('active');
+  APP.currentSection = section;
+  const titles = {
+    dashboard:'Dashboard',vendors:'Vendors',invoices:'Vendor Invoices','payment-entry':'Payment Entry',
+    'vendor-dashboard':'Vendor Dashboard',ledger:'Ledger',archive:'Archive',
+    'payment-cycle':'Payment Cycle','mis-score':'MIS Score','user-mgmt':'User Management',
+    permissions:'Permission Manager','email-settings':'Email Settings',profile:'My Profile',admin:'Admin Panel'
+  };
+  document.getElementById('headerTitle').textContent = titles[section]||section;
+  document.getElementById('headerBreadcrumb').textContent = `Jainco Pvt Ltd / ${titles[section]||section}`;
+  if (section==='payment-cycle') renderPaymentCycle();
+  if (section==='mis-score') renderMIS();
+  if (section==='ledger') renderLedger();
+  if (section==='archive') renderArchive();
+  if (section==='admin') loadAdminInfo();
+}
+
+// ══════════════════════════════════════════════════════════
+// CLOCK
+// ══════════════════════════════════════════════════════════
+function startClock() {
+  function tick() {
+    const now = new Date();
+    document.getElementById('clock').textContent = now.toLocaleTimeString('en-IN',{hour12:false});
+  }
+  tick(); setInterval(tick, 1000);
+}
+
+// ══════════════════════════════════════════════════════════
+// THEME
+// ══════════════════════════════════════════════════════════
+function setTheme(theme, el) {
+  document.documentElement.setAttribute('data-theme', theme);
+  localStorage.setItem('jaincoTheme', theme);
+  document.querySelectorAll('.theme-pill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+  if (window.barChartInst) { window.barChartInst.destroy(); window.pieChartInst.destroy(); renderDashCharts(); }
+}
+
+function loadTheme() {
+  const t = localStorage.getItem('jaincoTheme')||'dark';
+  document.documentElement.setAttribute('data-theme', t);
+  const pill = document.querySelector(`.tp-${t}`);
+  if (pill) { document.querySelectorAll('.theme-pill').forEach(p=>p.classList.remove('active')); pill.classList.add('active'); }
+}
+
+// ══════════════════════════════════════════════════════════
+// DASHBOARD
+// ══════════════════════════════════════════════════════════
+function loadDashboard() {
+  const totalVendors = APP.vendors.length;
+  const activeVendors = APP.vendors.filter(v=>v.Status==='Active').length;
+  const totalInv = APP.invoices.length;
+  const pending = APP.invoices.filter(i=>i.Status==='Pending');
+  const overdue = APP.invoices.filter(i=>i.Status==='Overdue');
+  const paidThisMonth = APP.invoices.filter(i=>{
+    if(i.Status!=='Paid'||!i.PaidDate) return false;
+    const d=new Date(i.PaidDate);
+    const now=new Date();
+    return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();
+  });
+  const pendingAmt = pending.reduce((s,i)=>s+Number(i.TotalAmount),0);
+  const paidAmt = paidThisMonth.reduce((s,i)=>s+Number(i.TotalAmount),0);
+
+  document.getElementById('dashKPI').innerHTML = [
+    {label:'Total Vendors',val:totalVendors,icon:'fa-building',cls:'accent'},
+    {label:'Active Vendors',val:activeVendors,icon:'fa-check-circle',cls:'success',type:'success'},
+    {label:'Total Invoices',val:totalInv,icon:'fa-file-invoice',cls:'info',type:'info'},
+    {label:'Pending Payments',val:`₹${fmtNum(pendingAmt)}`,icon:'fa-clock',cls:'warning',type:'warning'},
+    {label:'Paid This Month',val:`₹${fmtNum(paidAmt)}`,icon:'fa-check',cls:'success',type:'success'},
+    {label:'Overdue Invoices',val:overdue.length,icon:'fa-exclamation-circle',cls:'danger',type:'danger'},
+  ].map(k=>`<div class="kpi-card ${k.type||''}">
+    <div class="kpi-icon ${k.cls}"><i class="fas ${k.icon}"></i></div>
+    <div class="kpi-label">${k.label}</div>
+    <div class="kpi-value">${k.val}</div>
+  </div>`).join('');
+
+  renderDashCharts();
+  renderRecentTxn();
+  renderTop5();
+}
+
+function renderDashCharts() {
+  const months = ['Jul','Aug','Sep','Oct','Nov','Dec','Jan','Feb','Mar','Apr','May','Jun'];
+  const now = new Date();
+  const monthData = months.map((_,i) => {
+    const mo = (now.getMonth() - 11 + i + 12) % 12;
+    return APP.payments.filter(p => {
+      if(!p.PaymentDate) return false;
+      return new Date(p.PaymentDate).getMonth() === mo;
+    }).reduce((s,p)=>s+Number(p.Amount),0);
+  });
+
+  const cats = {};
+  APP.vendors.forEach(v => { cats[v.Category] = (cats[v.Category]||0)+1; });
+  const pieLabels = Object.keys(cats);
+  const pieData = pieLabels.map(k=>cats[k]);
+
+  const cs = getComputedStyle(document.documentElement);
+  const accent = cs.getPropertyValue('--accent').trim();
+  const surf2 = cs.getPropertyValue('--surface2').trim();
+  const textCol = cs.getPropertyValue('--text2').trim();
+  const borderCol = cs.getPropertyValue('--border').trim();
+
+  const chartOpts = {
+    responsive:true, maintainAspectRatio:false,
+    plugins:{legend:{labels:{color:textCol,font:{family:'Sora',size:12}}}},
+    scales:{x:{ticks:{color:textCol},grid:{color:borderCol+'44'}},y:{ticks:{color:textCol},grid:{color:borderCol+'44'}}}
+  };
+  const palettes = ['#6366f1','#22c55e','#f59e0b','#ef4444','#38bdf8','#a855f7'];
+
+  if (window.barChartInst) window.barChartInst.destroy();
+  window.barChartInst = new Chart(document.getElementById('barChart').getContext('2d'),{
+    type:'bar', data:{ labels:months,
+      datasets:[{label:'Payments (₹)',data:monthData,backgroundColor:accent+'99',borderColor:accent,borderWidth:1,borderRadius:4}]},
+    options:{...chartOpts}
+  });
+
+  if (window.pieChartInst) window.pieChartInst.destroy();
+  window.pieChartInst = new Chart(document.getElementById('pieChart').getContext('2d'),{
+    type:'doughnut', data:{ labels:pieLabels, datasets:[{data:pieData,backgroundColor:palettes,borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'bottom',labels:{color:textCol,font:{family:'Sora',size:11},boxWidth:12}}}}
+  });
+}
+
+function renderRecentTxn() {
+  const recent = [...APP.invoices].sort((a,b)=>new Date(b.InvoiceDate)-new Date(a.InvoiceDate)).slice(0,10);
+  document.getElementById('recentTxnTable').innerHTML = recent.map(i=>`<tr>
+    <td class="mono">${i.InvoiceNo}</td>
+    <td>${i.VendorName}</td>
+    <td class="mono">₹${fmtNum(i.TotalAmount)}</td>
+    <td>${statusBadge(i.Status)}</td>
+  </tr>`).join('');
+}
+
+function renderTop5() {
+  const totals = {};
+  APP.invoices.forEach(i=>{ totals[i.VendorName]=(totals[i.VendorName]||0)+Number(i.TotalAmount); });
+  const top5 = Object.entries(totals).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  const max = top5[0]?.[1]||1;
+  document.getElementById('top5Vendors').innerHTML = top5.map(([name,amt])=>`
+    <div style="margin-bottom:14px">
+      <div class="flex flex-between flex-center" style="margin-bottom:4px">
+        <span style="font-size:13px">${name}</span>
+        <span class="mono" style="font-size:13px;color:var(--accent)">₹${fmtNum(amt)}</span>
+      </div>
+      <div class="score-bar-wrap"><div class="score-bar score-good" style="width:${(amt/max*100).toFixed(0)}%"></div></div>
+    </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════
+// VENDORS
+// ══════════════════════════════════════════════════════════
+function renderVendors() {
+  const search = (document.getElementById('vendorSearch')?.value||'').toLowerCase();
+  const cat = document.getElementById('vendorCatFilter')?.value||'';
+  const stat = document.getElementById('vendorStatusFilter')?.value||'';
+  let filtered = APP.vendors.filter(v=>{
+    if (cat && v.Category!==cat) return false;
+    if (stat && v.Status!==stat) return false;
+    if (search && !v.Name.toLowerCase().includes(search) && !v.VendorID.toLowerCase().includes(search) && !v.City.toLowerCase().includes(search)) return false;
+    return true;
+  });
+  document.getElementById('vendorCount').textContent = `Showing ${filtered.length} of ${APP.vendors.length} vendors`;
+  const total = Math.ceil(filtered.length/ITEMS_PER_PAGE);
+  if (APP.vendorPage > total) APP.vendorPage = Math.max(1,total);
+  const page = filtered.slice((APP.vendorPage-1)*ITEMS_PER_PAGE, APP.vendorPage*ITEMS_PER_PAGE);
+  document.getElementById('vendorTable').innerHTML = page.map(v=>`<tr>
+    <td class="mono" style="color:var(--accent)">${v.VendorID}</td>
+    <td><strong>${v.Name}</strong><br><small style="color:var(--text3)">${v.ContactPerson||''}</small></td>
+    <td><span class="badge badge-accent">${v.Category}</span></td>
+    <td class="mono">${v.GSTNo||'-'}</td>
+    <td>${v.Phone||'-'}</td>
+    <td>${v.City}</td>
+    <td>${statusBadge(v.Status)}</td>
+    <td>${v.JoinDate||'-'}</td>
+    <td>
+      <button class="btn btn-outline btn-sm btn-icon" onclick="editVendor('${v.VendorID}')" title="Edit"><i class="fas fa-edit"></i></button>
+      <button class="btn btn-outline btn-sm btn-icon" onclick="archiveVendor('${v.VendorID}')" title="Archive"><i class="fas fa-archive"></i></button>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="deleteVendor('${v.VendorID}')" title="Delete"><i class="fas fa-trash"></i></button>
+    </td>
+  </tr>`).join('');
+  renderPagination('vendorPagination', APP.vendorPage, total, p=>{APP.vendorPage=p;renderVendors();});
+}
+
+function openVendorModal(vendor=null) {
+  document.getElementById('vendorModalTitle').textContent = vendor ? 'Edit Vendor' : 'Add Vendor';
+  const fields = ['Id','Name','Category','GST','Contact','Phone','Email','City','State','Status','Bank','IFSC','PayTerms','JoinDate'];
+  const vals = vendor ? [vendor.VendorID,vendor.Name,vendor.Category,vendor.GSTNo,vendor.ContactPerson,vendor.Phone,vendor.Email,vendor.City,vendor.State,vendor.Status,vendor.BankAccount,vendor.IFSC,vendor.PaymentTerms,vendor.JoinDate] : Array(14).fill('');
+  fields.forEach((f,i)=>{ const el=document.getElementById('v'+f); if(el) el.value=vals[i]||''; });
+  document.getElementById('editVendorId').value = vendor ? vendor.VendorID : '';
+  openModal('vendorModalOverlay');
+}
+
+function editVendor(id) {
+  const v = APP.vendors.find(v=>v.VendorID===id);
+  if(v) openVendorModal(v);
+}
+
+function saveVendor() {
+  const id = document.getElementById('editVendorId').value;
+  const name = document.getElementById('vName').value.trim();
+  const cat = document.getElementById('vCategory').value;
+  if (!name||!cat) { toast('Name and Category are required','error'); return; }
+  const data = {
+    VendorID: document.getElementById('vId').value||genId('V',APP.vendors,'VendorID'),
+    Name:name, Category:cat, GSTNo:document.getElementById('vGST').value,
+    ContactPerson:document.getElementById('vContact').value, Phone:document.getElementById('vPhone').value,
+    Email:document.getElementById('vEmail').value, City:document.getElementById('vCity').value,
+    State:document.getElementById('vState').value, Status:document.getElementById('vStatus').value,
+    BankAccount:document.getElementById('vBank').value, IFSC:document.getElementById('vIFSC').value,
+    PaymentTerms:document.getElementById('vPayTerms').value, JoinDate:document.getElementById('vJoinDate').value
+  };
+  if (id) {
+    const idx = APP.vendors.findIndex(v=>v.VendorID===id);
+    if(idx>=0) APP.vendors[idx] = data;
+    logActivity('Updated Vendor: '+name,'Vendors');
+    toast('Vendor updated successfully','success');
+  } else {
+    APP.vendors.push(data);
+    logActivity('Added Vendor: '+name,'Vendors');
+    toast('Vendor added successfully','success');
+  }
+  saveData(); closeModal('vendorModalOverlay');
+  renderVendors(); populateVendorSelects(); updateOverdueCount();
+}
+
+function deleteVendor(id) {
+  confirm('Delete Vendor','Are you sure you want to delete this vendor? This action cannot be undone.',()=>{
+    const v = APP.vendors.find(v=>v.VendorID===id);
+    APP.vendors = APP.vendors.filter(v=>v.VendorID!==id);
+    logActivity('Deleted Vendor: '+(v?.Name||id),'Vendors');
+    saveData(); renderVendors(); populateVendorSelects();
+    toast('Vendor deleted','success');
+  });
+}
+
+function archiveVendor(id) {
+  confirm('Archive Vendor','Move this vendor to archive?',()=>{
+    const idx = APP.vendors.findIndex(v=>v.VendorID===id);
+    if(idx>=0) {
+      const v = APP.vendors.splice(idx,1)[0];
+      v._archivedDate = new Date().toISOString().split('T')[0];
+      v._archivedBy = 'Admin';
+      APP.archived_vendors.push(v);
+      logActivity('Archived Vendor: '+v.Name,'Archive');
+      saveData(); renderVendors(); populateVendorSelects();
+      toast('Vendor archived','info');
+    }
+  });
+}
+
+function exportVendorsCSV() {
+  const headers = ['VendorID','Name','Category','GSTNo','ContactPerson','Phone','Email','City','State','Status','JoinDate','PaymentTerms'];
+  const rows = APP.vendors.map(v=>headers.map(h=>`"${v[h]||''}"`).join(','));
+  downloadCSV(`Jainco_Vendors_${today()}.csv`, [headers.join(','),...rows].join('\n'));
+}
+
+// ══════════════════════════════════════════════════════════
+// INVOICES
+// ══════════════════════════════════════════════════════════
+function renderInvoices() {
+  const search = (document.getElementById('invSearch')?.value||'').toLowerCase();
+  const stat = document.getElementById('invStatusFilter')?.value||'';
+  const from = document.getElementById('invDateFrom')?.value||'';
+  const to = document.getElementById('invDateTo')?.value||'';
+  let filtered = APP.invoices.filter(i=>{
+    if (stat && i.Status!==stat) return false;
+    if (search && !i.InvoiceNo.toLowerCase().includes(search) && !i.VendorName.toLowerCase().includes(search)) return false;
+    if (from && i.InvoiceDate < from) return false;
+    if (to && i.InvoiceDate > to) return false;
+    return true;
+  }).sort((a,b)=>new Date(b.InvoiceDate)-new Date(a.InvoiceDate));
+  const total = Math.ceil(filtered.length/ITEMS_PER_PAGE);
+  if (APP.invoicePage > total) APP.invoicePage = Math.max(1,total);
+  const page = filtered.slice((APP.invoicePage-1)*ITEMS_PER_PAGE, APP.invoicePage*ITEMS_PER_PAGE);
+  document.getElementById('invoiceTable').innerHTML = page.map(i=>`<tr>
+    <td><input type="checkbox" class="inv-check" value="${i.InvoiceNo}"></td>
+    <td class="mono" style="color:var(--accent)">${i.InvoiceNo}</td>
+    <td>${i.VendorName}</td>
+    <td class="mono">₹${fmtNum(i.Amount)}</td>
+    <td class="mono">₹${fmtNum(i.GSTAmount)}</td>
+    <td class="mono bold">₹${fmtNum(i.TotalAmount)}</td>
+    <td>${i.InvoiceDate}</td>
+    <td>${i.DueDate}</td>
+    <td>${statusBadge(i.Status)}</td>
+    <td>
+      <button class="btn btn-outline btn-sm btn-icon" onclick="viewInvoice('${i.InvoiceNo}')" title="View"><i class="fas fa-eye"></i></button>
+      <button class="btn btn-success btn-sm btn-icon" onclick="markInvoicePaid('${i.InvoiceNo}')" title="Mark Paid" ${i.Status==='Paid'?'disabled':''}><i class="fas fa-check"></i></button>
+      <button class="btn btn-danger btn-sm btn-icon" onclick="archiveInvoice('${i.InvoiceNo}')" title="Archive"><i class="fas fa-archive"></i></button>
+    </td>
+  </tr>`).join('');
+  renderPagination('invoicePagination', APP.invoicePage, total, p=>{APP.invoicePage=p;renderInvoices();});
+  updateOverdueCount();
+}
+
+function openInvoiceModal(inv=null) {
+  document.getElementById('invoiceModalTitle').textContent = inv ? 'Edit Invoice' : 'Add Invoice';
+  document.getElementById('iNo').value = inv?.InvoiceNo||genInvNo();
+  document.getElementById('iVendor').value = inv?.VendorID||'';
+  document.getElementById('iItems').value = inv?.Items||'';
+  document.getElementById('iAmount').value = inv?.Amount||'';
+  document.getElementById('iGST').value = inv?.GSTAmount||'';
+  document.getElementById('iTotal').value = inv?.TotalAmount||'';
+  document.getElementById('iDate').value = inv?.InvoiceDate||today();
+  document.getElementById('iDue').value = inv?.DueDate||'';
+  document.getElementById('iStatus').value = inv?.Status||'Pending';
+  document.getElementById('editInvoiceNo').value = inv?.InvoiceNo||'';
+  openModal('invoiceModalOverlay');
+}
+
+function calcGST() {
+  const amt = parseFloat(document.getElementById('iAmount').value)||0;
+  const gst = Math.round(amt * CONFIG.GST_RATE / 100);
+  document.getElementById('iGST').value = gst;
+  document.getElementById('iTotal').value = amt + gst;
+}
+
+function fillInvoiceVendorName() {}
+
+function saveInvoice() {
+  const id = document.getElementById('editInvoiceNo').value;
+  const vendorId = document.getElementById('iVendor').value;
+  const vendor = APP.vendors.find(v=>v.VendorID===vendorId);
+  const data = {
+    InvoiceNo: document.getElementById('iNo').value||genInvNo(),
+    VendorID: vendorId, VendorName: vendor?.Name||'',
+    InvoiceDate: document.getElementById('iDate').value,
+    DueDate: document.getElementById('iDue').value,
+    Items: document.getElementById('iItems').value,
+    Amount: parseFloat(document.getElementById('iAmount').value)||0,
+    GSTAmount: parseFloat(document.getElementById('iGST').value)||0,
+    TotalAmount: parseFloat(document.getElementById('iTotal').value)||0,
+    Status: document.getElementById('iStatus').value,
+    PaidDate:'', PaymentRef:''
+  };
+  if (id) {
+    const idx = APP.invoices.findIndex(i=>i.InvoiceNo===id);
+    if(idx>=0) APP.invoices[idx]=data;
+    toast('Invoice updated','success');
+  } else {
+    APP.invoices.push(data);
+    toast('Invoice added','success');
+  }
+  logActivity('Saved Invoice: '+data.InvoiceNo,'Invoices');
+  saveData(); closeModal('invoiceModalOverlay'); renderInvoices(); updateOverdueCount();
+}
+
+function markInvoicePaid(no) {
+  const idx = APP.invoices.findIndex(i=>i.InvoiceNo===no);
+  if(idx>=0) {
+    APP.invoices[idx].Status='Paid';
+    APP.invoices[idx].PaidDate=today();
+    toast('Invoice marked as paid','success');
+    logActivity('Marked Paid: '+no,'Invoices');
+    saveData(); renderInvoices(); updateOverdueCount();
+  }
+}
+
+function archiveInvoice(no) {
+  confirm('Archive Invoice','Move this invoice to archive?',()=>{
+    const idx = APP.invoices.findIndex(i=>i.InvoiceNo===no);
+    if(idx>=0) {
+      const inv = APP.invoices.splice(idx,1)[0];
+      inv._archivedDate = today(); inv._archivedBy = 'Admin';
+      APP.archived_invoices.push(inv);
+      saveData(); renderInvoices(); updateOverdueCount();
+      toast('Invoice archived','info');
+    }
+  });
+}
+
+function toggleAllInvoices(cb) {
+  document.querySelectorAll('.inv-check').forEach(c=>c.checked=cb.checked);
+}
+
+function bulkMarkPaid() {
+  const selected = [...document.querySelectorAll('.inv-check:checked')].map(c=>c.value);
+  if (!selected.length) { toast('Select invoices first','warning'); return; }
+  selected.forEach(no=>{ const idx=APP.invoices.findIndex(i=>i.InvoiceNo===no); if(idx>=0){APP.invoices[idx].Status='Paid';APP.invoices[idx].PaidDate=today();}});
+  toast(`${selected.length} invoices marked as paid`,'success');
+  logActivity(`Bulk marked ${selected.length} invoices paid`,'Invoices');
+  saveData(); renderInvoices(); updateOverdueCount();
+}
+
+function viewInvoice(no) {
+  const inv = APP.invoices.find(i=>i.InvoiceNo===no);
+  if (!inv) return;
+  const w = window.open('','_blank');
+  w.document.write(`<html><head><title>Invoice ${inv.InvoiceNo}</title>
+  <style>body{font-family:sans-serif;padding:40px;color:#222;}h1{font-size:24px}table{width:100%;border-collapse:collapse}th,td{padding:10px;border:1px solid #ddd;text-align:left}th{background:#f5f5f5}.total{font-weight:bold;font-size:16px}</style></head>
+  <body>
+  <h1>${CONFIG.COMPANY}</h1>
+  <h2>Tax Invoice</h2>
+  <p><strong>Invoice No:</strong> ${inv.InvoiceNo} &nbsp;&nbsp; <strong>Date:</strong> ${inv.InvoiceDate}</p>
+  <p><strong>Vendor:</strong> ${inv.VendorName} &nbsp;&nbsp; <strong>Due Date:</strong> ${inv.DueDate}</p>
+  <table><thead><tr><th>Description</th><th>Amount</th><th>GST (18%)</th><th>Total</th></tr></thead>
+  <tbody><tr><td>${inv.Items}</td><td>₹${fmtNum(inv.Amount)}</td><td>₹${fmtNum(inv.GSTAmount)}</td><td class="total">₹${fmtNum(inv.TotalAmount)}</td></tr></tbody></table>
+  <p style="margin-top:20px"><strong>Status:</strong> ${inv.Status} ${inv.PaidDate?'| Paid on: '+inv.PaidDate:''}</p>
+  <button onclick="window.print()" style="margin-top:20px;padding:10px 20px;background:#6366f1;color:#fff;border:none;border-radius:6px;cursor:pointer">Print Invoice</button>
+  </body></html>`);
+  w.document.close();
+}
+
+function exportInvoicesCSV() {
+  const h = ['InvoiceNo','VendorName','Amount','GSTAmount','TotalAmount','Status','InvoiceDate','DueDate'];
+  const rows = APP.invoices.map(i=>h.map(k=>`"${i[k]||''}"`).join(','));
+  downloadCSV(`Jainco_Invoices_${today()}.csv`,[h.join(','),...rows].join('\n'));
+}
+
+function updateOverdueCount() {
+  const count = APP.invoices.filter(i=>i.Status==='Overdue').length;
+  const badge = document.getElementById('overdueCount');
+  if (badge) { badge.textContent = count; badge.style.display = count>0?'':'none'; }
+}
+
+// ══════════════════════════════════════════════════════════
+// PAYMENT ENTRY
+// ══════════════════════════════════════════════════════════
+function loadPaymentPage() {
+  const today2 = today();
+  const payDateEl = document.getElementById('payDate');
+  if (payDateEl) payDateEl.value = today2;
+
+  const todayPaid = APP.payments.filter(p=>p.PaymentDate===today2).reduce((s,p)=>s+Number(p.Amount),0);
+  const monthPaid = APP.payments.filter(p=>{
+    if(!p.PaymentDate) return false;
+    const d=new Date(p.PaymentDate),n=new Date();
+    return d.getMonth()===n.getMonth()&&d.getFullYear()===n.getFullYear();
+  }).reduce((s,p)=>s+Number(p.Amount),0);
+  const totalPaid = APP.payments.reduce((s,p)=>s+Number(p.Amount),0);
+
+  const kEl = document.getElementById('payKPIs');
+  if (kEl) kEl.innerHTML = [
+    {label:'Total Paid Today',val:'₹'+fmtNum(todayPaid),cls:'accent'},
+    {label:'Paid This Month',val:'₹'+fmtNum(monthPaid),cls:'success'},
+    {label:'Total Disbursed',val:'₹'+fmtNum(totalPaid),cls:'info'},
+    {label:'Total Transactions',val:APP.payments.length,cls:'warning'},
+  ].map(k=>`<div class="kpi-card"><div class="kpi-label">${k.label}</div><div class="kpi-value" style="font-size:18px">${k.val}</div></div>`).join('');
+
+  const rEl = document.getElementById('recentPayTable');
+  if (rEl) {
+    const recent = [...APP.payments].sort((a,b)=>new Date(b.PaymentDate)-new Date(a.PaymentDate)).slice(0,10);
+    rEl.innerHTML = recent.map(p=>`<tr>
+      <td class="mono">${p.PaymentID}</td>
+      <td>${APP.vendors.find(v=>v.VendorID===p.VendorID)?.Name||p.VendorID}</td>
+      <td class="mono">₹${fmtNum(p.Amount)}</td>
+      <td><span class="badge badge-accent">${p.PaymentMode}</span></td>
+      <td>${p.PaymentDate}</td>
+    </tr>`).join('');
+  }
+}
+
+function loadVendorInvoices() {
+  const vid = document.getElementById('payVendor').value;
+  const sel = document.getElementById('payInvoice');
+  sel.innerHTML = '<option value="">Select Invoice...</option>';
+  if (!vid) return;
+  APP.invoices.filter(i=>i.VendorID===vid && i.Status!=='Paid').forEach(i=>{
+    sel.innerHTML += `<option value="${i.InvoiceNo}">${i.InvoiceNo} — ₹${fmtNum(i.TotalAmount)} (${i.Status})</option>`;
+  });
+}
+
+function fillPaymentAmount() {
+  const no = document.getElementById('payInvoice').value;
+  const inv = APP.invoices.find(i=>i.InvoiceNo===no);
+  if (inv) {
+    const paid = APP.payments.filter(p=>p.InvoiceRef===no).reduce((s,p)=>s+Number(p.Amount),0);
+    const bal = Number(inv.TotalAmount) - paid;
+    document.getElementById('payBalance').value = fmtNum(bal);
+    document.getElementById('payAmount').value = bal;
+  }
+}
+
+function recordPayment() {
+  const vid = document.getElementById('payVendor').value;
+  const amt = parseFloat(document.getElementById('payAmount').value)||0;
+  if (!vid||!amt) { toast('Vendor and Amount are required','error'); return; }
+  const payment = {
+    PaymentID: genId('PAY-',APP.payments,'PaymentID'),
+    VendorID: vid,
+    InvoiceRef: document.getElementById('payInvoice').value,
+    Amount: amt,
+    PaymentMode: document.getElementById('payMode').value,
+    BankRef: document.getElementById('payRef').value,
+    PaymentDate: document.getElementById('payDate').value||today(),
+    ProcessedBy: 'Admin',
+    Remarks: document.getElementById('payRemarks').value
+  };
+  APP.payments.push(payment);
+  const invNo = payment.InvoiceRef;
+  if (invNo) {
+    const inv = APP.invoices.find(i=>i.InvoiceNo===invNo);
+    if (inv) { inv.Status='Paid'; inv.PaidDate=payment.PaymentDate; inv.PaymentRef=payment.BankRef; }
+  }
+  logActivity('Payment Recorded: ₹'+fmtNum(amt),'Payments');
+  saveData(); loadPaymentPage();
+  toast('Payment recorded successfully','success');
+  document.getElementById('payVendor').value='';
+  document.getElementById('payInvoice').innerHTML='<option value="">Select Invoice...</option>';
+  document.getElementById('payBalance').value='';
+  document.getElementById('payAmount').value='';
+  document.getElementById('payRef').value='';
+  document.getElementById('payRemarks').value='';
+}
+
+// ══════════════════════════════════════════════════════════
+// VENDOR DASHBOARD
+// ══════════════════════════════════════════════════════════
+function loadVendorDashboard() {
+  const vid = document.getElementById('vdVendorSelect').value;
+  if (!vid) return;
+  const vendor = APP.vendors.find(v=>v.VendorID===vid);
+  if (!vendor) return;
+  const invs = APP.invoices.filter(i=>i.VendorID===vid);
+  const pays = APP.payments.filter(p=>p.VendorID===vid);
+  const totalInv = invs.reduce((s,i)=>s+Number(i.TotalAmount),0);
+  const totalPaid = pays.reduce((s,p)=>s+Number(p.Amount),0);
+  const outstanding = totalInv - totalPaid;
+  const initials = vendor.Name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+  document.getElementById('vendorDashContent').innerHTML = `
+    <div class="two-col" style="margin-bottom:20px">
+      <div class="card">
+        <div class="flex flex-center gap-16 mb-16">
+          <div style="width:60px;height:60px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;color:#fff">${initials}</div>
+          <div>
+            <div style="font-size:18px;font-weight:700">${vendor.Name}</div>
+            <div style="color:var(--text3);font-size:13px">${vendor.Category} · ${vendor.City}, ${vendor.State}</div>
+            <div style="font-size:12px;margin-top:4px">${statusBadge(vendor.Status)}</div>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;font-size:13px">
+          <div><span style="color:var(--text3)">GST No:</span> <span class="mono">${vendor.GSTNo||'-'}</span></div>
+          <div><span style="color:var(--text3)">Phone:</span> ${vendor.Phone||'-'}</div>
+          <div><span style="color:var(--text3)">Email:</span> ${vendor.Email||'-'}</div>
+          <div><span style="color:var(--text3)">Terms:</span> ${vendor.PaymentTerms||'-'}</div>
+          <div><span style="color:var(--text3)">IFSC:</span> <span class="mono">${vendor.IFSC||'-'}</span></div>
+          <div><span style="color:var(--text3)">Bank Acc:</span> <span class="mono">${vendor.BankAccount||'-'}</span></div>
+        </div>
+      </div>
+      <div>
+        <div class="kpi-grid" style="grid-template-columns:1fr 1fr">
+          <div class="kpi-card"><div class="kpi-label">Total Invoiced</div><div class="kpi-value" style="font-size:18px">₹${fmtNum(totalInv)}</div></div>
+          <div class="kpi-card success"><div class="kpi-label">Total Paid</div><div class="kpi-value" style="font-size:18px">₹${fmtNum(totalPaid)}</div></div>
+          <div class="kpi-card ${outstanding>0?'danger':'success'}" style="grid-column:1/-1"><div class="kpi-label">Outstanding</div><div class="kpi-value" style="font-size:22px">₹${fmtNum(outstanding)}</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="card">
+      <div style="font-weight:600;margin-bottom:12px">Invoice History</div>
+      <div class="table-wrap"><table>
+        <thead><tr><th>Invoice No</th><th>Date</th><th>Due</th><th>Amount</th><th>GST</th><th>Total</th><th>Status</th></tr></thead>
+        <tbody>${invs.map(i=>`<tr>
+          <td class="mono">${i.InvoiceNo}</td><td>${i.InvoiceDate}</td><td>${i.DueDate}</td>
+          <td class="mono">₹${fmtNum(i.Amount)}</td><td class="mono">₹${fmtNum(i.GSTAmount)}</td>
+          <td class="mono bold">₹${fmtNum(i.TotalAmount)}</td><td>${statusBadge(i.Status)}</td>
+        </tr>`).join('')}</tbody>
+      </table></div>
+    </div>
+    <div class="card mt-16">
+      <div style="font-weight:600;margin-bottom:12px">Payment Timeline</div>
+      ${pays.length===0?'<div style="color:var(--text3);text-align:center;padding:20px">No payments recorded</div>':
+      pays.map(p=>`<div style="display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);align-items:center">
+        <div style="width:36px;height:36px;border-radius:50%;background:rgba(34,197,94,.15);display:flex;align-items:center;justify-content:center;color:var(--success)"><i class="fas fa-check"></i></div>
+        <div style="flex:1"><div style="font-size:13px;font-weight:500">${p.PaymentID} — ${p.PaymentMode}</div>
+        <div style="font-size:12px;color:var(--text3)">${p.PaymentDate} · ${p.Remarks||''}</div></div>
+        <div class="mono" style="color:var(--success);font-weight:600">₹${fmtNum(p.Amount)}</div>
+      </div>`).join('')}
+    </div>`;
+}
+
+// ══════════════════════════════════════════════════════════
+// LEDGER
+// ══════════════════════════════════════════════════════════
+function renderLedger() {
+  const vid = document.getElementById('ledgerVendor')?.value||'';
+  const from = document.getElementById('ledgerFrom')?.value||'';
+  const to = document.getElementById('ledgerTo')?.value||'';
+  const opening = parseFloat(document.getElementById('openingBal')?.value)||0;
+
+  const entries = [];
+  APP.invoices.forEach(i=>{
+    if(vid && i.VendorID!==vid) return;
+    if(from && i.InvoiceDate<from) return;
+    if(to && i.InvoiceDate>to) return;
+    entries.push({date:i.InvoiceDate,desc:i.Items||i.InvoiceNo,vendor:i.VendorName,debit:Number(i.TotalAmount),credit:0,ref:i.InvoiceNo});
+  });
+  APP.payments.forEach(p=>{
+    const v=APP.vendors.find(x=>x.VendorID===p.VendorID);
+    if(vid && p.VendorID!==vid) return;
+    if(from && p.PaymentDate<from) return;
+    if(to && p.PaymentDate>to) return;
+    entries.push({date:p.PaymentDate,desc:'Payment: '+p.InvoiceRef,vendor:v?.Name||p.VendorID,debit:0,credit:Number(p.Amount),ref:p.PaymentID});
+  });
+  entries.sort((a,b)=>a.date.localeCompare(b.date));
+
+  let bal = opening;
+  let totDeb=0, totCred=0;
+  const rows = entries.map(e=>{
+    bal += e.debit - e.credit;
+    totDeb += e.debit; totCred += e.credit;
+    return `<tr>
+      <td>${e.date}</td>
+      <td>${e.desc}</td>
+      <td>${e.vendor}</td>
+      <td class="mono ledger-debit">${e.debit?'₹'+fmtNum(e.debit):'-'}</td>
+      <td class="mono ledger-credit">${e.credit?'₹'+fmtNum(e.credit):'-'}</td>
+      <td class="mono bold ${bal>=0?'ledger-debit':'ledger-credit'}">₹${fmtNum(Math.abs(bal))}</td>
+    </tr>`;
+  });
+  const tEl = document.getElementById('ledgerTable');
+  if (tEl) tEl.innerHTML = rows.join('')||(opening?'':'<tr><td colspan="6" style="text-align:center;color:var(--text3);padding:30px">No ledger entries</td></tr>');
+  const sEl = document.getElementById('ledgerSummary');
+  if (sEl) sEl.innerHTML = `
+    <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Opening Balance</div><div class="mono bold">₹${fmtNum(opening)}</div></div>
+    <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Total Debit</div><div class="mono bold ledger-debit">₹${fmtNum(totDeb)}</div></div>
+    <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Total Credit</div><div class="mono bold ledger-credit">₹${fmtNum(totCred)}</div></div>
+    <div><div style="font-size:11px;color:var(--text3);margin-bottom:4px">Closing Balance</div><div class="mono bold">₹${fmtNum(Math.abs(opening+totDeb-totCred))}</div></div>`;
+}
+
+function exportLedgerCSV() {
+  const h=['Date','Description','Vendor','Debit','Credit'];
+  const rows = APP.invoices.map(i=>[i.InvoiceDate,i.Items,i.VendorName,i.TotalAmount,0].map(v=>`"${v}"`).join(','));
+  downloadCSV(`Jainco_Ledger_${today()}.csv`,[h.join(','),...rows].join('\n'));
+}
+
+// ══════════════════════════════════════════════════════════
+// ARCHIVE
+// ══════════════════════════════════════════════════════════
+let archiveTab = 'vendors';
+function showArchiveTab(tab) {
+  archiveTab = tab;
+  document.getElementById('archVTab').className = 'btn btn-'+(tab==='vendors'?'primary':'outline')+' btn-sm';
+  document.getElementById('archITab').className = 'btn btn-'+(tab==='invoices'?'primary':'outline')+' btn-sm';
+  renderArchive();
+}
+
+function renderArchive() {
+  const el = document.getElementById('archiveContent');
+  if (!el) return;
+  if (archiveTab==='vendors') {
+    if (!APP.archived_vendors.length) { el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text3)">No archived vendors</div>'; return; }
+    el.innerHTML=`<div class="table-wrap"><table>
+      <thead><tr><th>ID</th><th>Name</th><th>Category</th><th>City</th><th>Archived Date</th><th>Archived By</th><th>Actions</th></tr></thead>
+      <tbody>${APP.archived_vendors.map(v=>`<tr>
+        <td class="mono">${v.VendorID}</td><td>${v.Name}</td><td>${v.Category}</td><td>${v.City}</td>
+        <td>${v._archivedDate||'-'}</td><td>${v._archivedBy||'-'}</td>
+        <td>
+          <button class="btn btn-success btn-sm" onclick="restoreVendor('${v.VendorID}')"><i class="fas fa-undo"></i> Restore</button>
+          <button class="btn btn-danger btn-sm" onclick="permDeleteVendor('${v.VendorID}')"><i class="fas fa-trash"></i> Delete</button>
+        </td>
+      </tr>`).join('')}</tbody></table></div>`;
+  } else {
+    if (!APP.archived_invoices.length) { el.innerHTML='<div style="text-align:center;padding:40px;color:var(--text3)">No archived invoices</div>'; return; }
+    el.innerHTML=`<div class="table-wrap"><table>
+      <thead><tr><th>Invoice No</th><th>Vendor</th><th>Total</th><th>Status</th><th>Archived</th><th>Actions</th></tr></thead>
+      <tbody>${APP.archived_invoices.map(i=>`<tr>
+        <td class="mono">${i.InvoiceNo}</td><td>${i.VendorName}</td>
+        <td class="mono">₹${fmtNum(i.TotalAmount)}</td><td>${statusBadge(i.Status)}</td>
+        <td>${i._archivedDate||'-'}</td>
+        <td>
+          <button class="btn btn-success btn-sm" onclick="restoreInvoice('${i.InvoiceNo}')"><i class="fas fa-undo"></i> Restore</button>
+          <button class="btn btn-danger btn-sm" onclick="permDeleteInvoice('${i.InvoiceNo}')"><i class="fas fa-trash"></i> Delete</button>
+        </td>
+      </tr>`).join('')}</tbody></table></div>`;
+  }
+}
+
+function restoreVendor(id) {
+  const idx = APP.archived_vendors.findIndex(v=>v.VendorID===id);
+  if(idx>=0) {
+    const v=APP.archived_vendors.splice(idx,1)[0];
+    delete v._archivedDate; delete v._archivedBy;
+    APP.vendors.push(v);
+    saveData(); renderArchive(); renderVendors(); populateVendorSelects();
+    toast('Vendor restored','success');
+  }
+}
+
+function permDeleteVendor(id) {
+  confirm('Permanently Delete','This action cannot be undone. Delete permanently?',()=>{
+    APP.archived_vendors = APP.archived_vendors.filter(v=>v.VendorID!==id);
+    saveData(); renderArchive(); toast('Permanently deleted','info');
+  });
+}
+
+function restoreInvoice(no) {
+  const idx = APP.archived_invoices.findIndex(i=>i.InvoiceNo===no);
+  if(idx>=0) {
+    const inv=APP.archived_invoices.splice(idx,1)[0];
+    delete inv._archivedDate; delete inv._archivedBy;
+    APP.invoices.push(inv);
+    saveData(); renderArchive(); renderInvoices();
+    toast('Invoice restored','success');
+  }
+}
+
+function permDeleteInvoice(no) {
+  confirm('Permanently Delete','This cannot be undone. Delete permanently?',()=>{
+    APP.archived_invoices = APP.archived_invoices.filter(i=>i.InvoiceNo!==no);
+    saveData(); renderArchive(); toast('Permanently deleted','info');
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// PAYMENT CYCLE
+// ══════════════════════════════════════════════════════════
+function renderPaymentCycle() {
+  const now = new Date(); now.setHours(0,0,0,0);
+  const in30 = new Date(now); in30.setDate(in30.getDate()+30);
+  const pending = APP.invoices.filter(i=>i.Status!=='Paid').sort((a,b)=>new Date(a.DueDate)-new Date(b.DueDate));
+
+  let overdue=0,week=0,month=0,total=0;
+  pending.forEach(i=>{
+    const due=new Date(i.DueDate); due.setHours(0,0,0,0);
+    const diff = Math.ceil((due-now)/(864e5));
+    total+=Number(i.TotalAmount);
+    if(diff<0) overdue+=Number(i.TotalAmount);
+    else if(diff<=7) week+=Number(i.TotalAmount);
+    else if(diff<=30) month+=Number(i.TotalAmount);
+  });
+
+  const kEl = document.getElementById('cycleKPIs');
+  if(kEl) kEl.innerHTML = [
+    {l:'Overdue',v:'₹'+fmtNum(overdue),t:'danger'},{l:'Due This Week',v:'₹'+fmtNum(week),t:'warning'},
+    {l:'Due This Month',v:'₹'+fmtNum(month),t:'info'},{l:'Total Pending',v:'₹'+fmtNum(total),t:'accent'}
+  ].map(k=>`<div class="kpi-card ${k.t}"><div class="kpi-label">${k.l}</div><div class="kpi-value" style="font-size:18px">${k.v}</div></div>`).join('');
+
+  const cEl = document.getElementById('cycleList');
+  if (!cEl) return;
+  if (!pending.length) { cEl.innerHTML='<div style="text-align:center;padding:40px;color:var(--text3)">No pending payments</div>'; return; }
+  cEl.innerHTML = pending.map(i=>{
+    const due=new Date(i.DueDate); due.setHours(0,0,0,0);
+    const diff=Math.ceil((due-now)/(864e5));
+    let cls='ok',label='On Track';
+    if(diff<0){cls='overdue';label=`${Math.abs(diff)} days overdue`;}
+    else if(diff<=3){cls='soon';label=`Due in ${diff} day(s)`;}
+    else if(diff<=7){cls='week';label=`Due in ${diff} days`;}
+    else{label=`Due in ${diff} days`;}
+    return `<div class="cycle-item">
+      <input type="checkbox" value="${i.InvoiceNo}" class="cycle-check">
+      <div class="cycle-urgency ${cls}"></div>
+      <div style="flex:1">
+        <div style="font-size:13px;font-weight:500">${i.VendorName}</div>
+        <div style="font-size:12px;color:var(--text3)">${i.InvoiceNo} · ${i.Items||'Invoice'}</div>
+      </div>
+      <div class="cycle-days ${cls}">${label}</div>
+      <div class="mono bold">₹${fmtNum(i.TotalAmount)}</div>
+      <button class="btn btn-success btn-sm" onclick="markInvoicePaid('${i.InvoiceNo}');renderPaymentCycle()"><i class="fas fa-check"></i></button>
+      <button class="btn btn-outline btn-sm" onclick="sendReminder('${i.VendorID}','${i.InvoiceNo}')"><i class="fas fa-bell"></i></button>
+    </div>`;
+  }).join('');
+}
+
+function bulkMarkPaidCycle() {
+  const checked = [...document.querySelectorAll('.cycle-check:checked')].map(c=>c.value);
+  if(!checked.length){toast('Select invoices to mark paid','warning');return;}
+  checked.forEach(no=>{ const idx=APP.invoices.findIndex(i=>i.InvoiceNo===no); if(idx>=0){APP.invoices[idx].Status='Paid';APP.invoices[idx].PaidDate=today();}});
+  toast(`${checked.length} invoices marked as paid`,'success');
+  saveData(); renderPaymentCycle(); renderInvoices(); updateOverdueCount();
+}
+
+function sendReminder(vid,invNo) {
+  const v=APP.vendors.find(x=>x.VendorID===vid);
+  toast(`Reminder triggered for ${v?.Name||vid} (${invNo})`,'info');
+  logActivity(`Reminder sent: ${invNo}`,'Payment Cycle');
+}
+
+// ══════════════════════════════════════════════════════════
+// MIS SCORE
+// ══════════════════════════════════════════════════════════
+function calcVendorScore(vendor) {
+  const invs = APP.invoices.filter(i=>i.VendorID===vendor.VendorID);
+  if (!invs.length) return {total:0,timeliness:0,accuracy:0,response:0,compliance:0,dispute:0};
+  const paid = invs.filter(i=>i.Status==='Paid');
+  const overdue = invs.filter(i=>i.Status==='Overdue');
+  const timeliness = paid.length ? Math.max(0,100 - (overdue.length/invs.length*100)) : 50;
+  const accuracy = 75 + Math.floor(Math.random()*20);
+  const response = 60 + Math.floor(Math.random()*30);
+  const compliance = vendor.GSTNo ? 80+Math.floor(Math.random()*15) : 50;
+  const dispute = Math.max(0, 100 - (overdue.length * 15));
+  const total = Math.round(timeliness*0.3 + accuracy*0.25 + response*0.2 + compliance*0.15 + dispute*0.1);
+  return {total,timeliness:Math.round(timeliness),accuracy:Math.round(accuracy),response:Math.round(response),compliance:Math.round(compliance),dispute:Math.round(dispute)};
+}
+
+function scoreRating(s) {
+  if(s>=80) return {label:'Excellent',cls:'badge-success',bar:'score-excellent'};
+  if(s>=60) return {label:'Good',cls:'badge-info',bar:'score-good'};
+  if(s>=40) return {label:'Average',cls:'badge-warning',bar:'score-average'};
+  return {label:'Poor',cls:'badge-danger',bar:'score-poor'};
+}
+
+function renderMIS() {
+  const vendors = APP.vendors.slice(0,15);
+  const scores = vendors.map(v=>({...v,...calcVendorScore(v)})).sort((a,b)=>b.total-a.total);
+
+  document.getElementById('misTable').innerHTML = scores.map(v=>{
+    const r=scoreRating(v.total);
+    const trend = v.total>70?'↑':v.total>50?'→':'↓';
+    return `<tr>
+      <td><strong>${v.Name}</strong></td>
+      <td><span class="badge badge-accent">${v.Category}</span></td>
+      <td>
+        <div class="flex flex-center gap-8" style="min-width:120px">
+          <div style="font-weight:700;font-family:'DM Mono',monospace">${v.total}</div>
+          <div class="score-bar-wrap" style="flex:1"><div class="score-bar ${r.bar}" style="width:${v.total}%"></div></div>
+        </div>
+      </td>
+      <td><span class="badge ${r.cls}">${r.label}</span></td>
+      <td>${v.timeliness}%</td>
+      <td>${v.accuracy}%</td>
+      <td>${v.response}%</td>
+      <td style="font-size:16px;font-weight:700">${trend}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="showMISDetail('${v.VendorID}')">Details</button></td>
+    </tr>`;
+  }).join('');
+
+  // MIS Bar Chart
+  const cs=getComputedStyle(document.documentElement);
+  const textCol=cs.getPropertyValue('--text2').trim();
+  const borderCol=cs.getPropertyValue('--border').trim();
+  const top8=scores.slice(0,8);
+  if(window.misChartInst){window.misChartInst.destroy();}
+  window.misChartInst = new Chart(document.getElementById('misBarChart').getContext('2d'),{
+    type:'bar',
+    data:{labels:top8.map(v=>v.Name.split(' ')[0]),datasets:[{label:'MIS Score',data:top8.map(v=>v.total),
+      backgroundColor:top8.map(v=>v.total>=80?'#22c55e99':v.total>=60?'#38bdf899':v.total>=40?'#f59e0b99':'#ef444499'),
+      borderWidth:0,borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:textCol},grid:{color:borderCol+'44'}},
+              y:{min:0,max:100,ticks:{color:textCol},grid:{color:borderCol+'44'}}}}
+  });
+}
+
+function showMISDetail(vid) {
+  const vendor=APP.vendors.find(v=>v.VendorID===vid);
+  if(!vendor) return;
+  const s=calcVendorScore(vendor);
+  const r=scoreRating(s.total);
+  document.getElementById('misModalTitle').textContent=vendor.Name+' — Score Details';
+  document.getElementById('misModalBody').innerHTML=`
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:48px;font-weight:700;font-family:'DM Mono',monospace;color:var(--accent)">${s.total}</div>
+      <span class="badge ${r.cls}">${r.label}</span>
+    </div>
+    ${[['Payment Timeliness',s.timeliness,30],['Invoice Accuracy',s.accuracy,25],['Response Time',s.response,20],['Compliance',s.compliance,15],['No Disputes',s.dispute,10]].map(([l,v,w])=>`
+      <div style="margin-bottom:12px">
+        <div class="flex flex-between flex-center" style="margin-bottom:4px">
+          <span style="font-size:13px">${l}</span>
+          <span class="mono">${v}% <span style="color:var(--text3)">(weight: ${w}%)</span></span>
+        </div>
+        <div class="score-bar-wrap"><div class="score-bar ${scoreRating(v).bar}" style="width:${v}%"></div></div>
+      </div>`).join('')}`;
+  openModal('misModalOverlay');
+}
+
+// ══════════════════════════════════════════════════════════
+// USERS
+// ══════════════════════════════════════════════════════════
+function renderUsers() {
+  const tEl=document.getElementById('userTable');
+  if(!tEl) return;
+  tEl.innerHTML=APP.users.map(u=>`<tr>
+    <td class="mono">${u.UserID}</td>
+    <td><strong>${u.Name}</strong></td>
+    <td>${u.Email}</td>
+    <td><span class="badge badge-accent">${u.Role}</span></td>
+    <td>${u.Department||'-'}</td>
+    <td style="font-size:12px;color:var(--text3)">${u.LastLogin||'-'}</td>
+    <td>${statusBadge(u.Status)}</td>
+    <td>
+      <button class="btn btn-outline btn-sm btn-icon" onclick="editUser('${u.UserID}')"><i class="fas fa-edit"></i></button>
+      <button class="btn ${u.Status==='Active'?'btn-danger':'btn-success'} btn-sm btn-icon" onclick="toggleUser('${u.UserID}')">
+        <i class="fas fa-${u.Status==='Active'?'ban':'check'}"></i></button>
+    </td>
+  </tr>`).join('');
+
+  const aEl=document.getElementById('activityLog');
+  if(aEl) aEl.innerHTML=[...APP.activityLog].reverse().slice(0,20).map(a=>`<tr>
+    <td style="font-size:12px">${a.time}</td><td>${a.user}</td><td>${a.action}</td><td>${a.module}</td>
+  </tr>`).join('')||'<tr><td colspan="4" style="text-align:center;color:var(--text3);padding:20px">No activity yet</td></tr>';
+}
+
+function openUserModal(user=null) {
+  document.getElementById('uName').value=user?.Name||'';
+  document.getElementById('uEmail').value=user?.Email||'';
+  document.getElementById('uRole').value=user?.Role||'Viewer';
+  document.getElementById('uDept').value=user?.Department||'';
+  document.getElementById('uStatus').value=user?.Status||'Active';
+  document.getElementById('editUserId').value=user?.UserID||'';
+  openModal('paymentModalOverlay');
+}
+
+function editUser(id){openUserModal(APP.users.find(u=>u.UserID===id));}
+
+function saveUser() {
+  const id=document.getElementById('editUserId').value;
+  const name=document.getElementById('uName').value.trim();
+  if(!name){toast('Name is required','error');return;}
+  const data={
+    UserID:id||genId('U',APP.users,'UserID'),Name:name,Email:document.getElementById('uEmail').value,
+    Role:document.getElementById('uRole').value,Department:document.getElementById('uDept').value,
+    Status:document.getElementById('uStatus').value,LastLogin:id?APP.users.find(u=>u.UserID===id)?.LastLogin||'-':'-'
+  };
+  if(id){const idx=APP.users.findIndex(u=>u.UserID===id);if(idx>=0)APP.users[idx]=data;}
+  else APP.users.push(data);
+  logActivity((id?'Updated':'Added')+' User: '+name,'Users');
+  saveData();closeModal('paymentModalOverlay');renderUsers();
+  toast('User saved','success');
+}
+
+function toggleUser(id) {
+  const u=APP.users.find(u=>u.UserID===id);
+  if(u){u.Status=u.Status==='Active'?'Inactive':'Active';saveData();renderUsers();toast('User status updated','success');}
+}
+
+// ══════════════════════════════════════════════════════════
+// PERMISSIONS
+// ══════════════════════════════════════════════════════════
+const MODULES=['Dashboard','Vendors','Invoices','Payments','Ledger','Archive','Payment Cycle','MIS Score','Users','Admin'];
+const ROLES=['Admin','Manager','Accountant','Viewer'];
+const PERMS=['View','Create','Edit','Delete'];
+const TEMPLATES={
+  admin:Array(MODULES.length).fill([true,true,true,true]),
+  manager:MODULES.map(m=>['View','Create','Edit','Delete'].map(p=>p!=='Delete')),
+  accountant:MODULES.map(m=>m==='Users'||m==='Admin'?[true,false,false,false]:[true,true,true,false]),
+  viewer:Array(MODULES.length).fill([true,false,false,false])
+};
+
+let permState={};
+
+function renderPermissions() {
+  if(!APP.permissions){
+    permState={};
+    ROLES.forEach(r=>{permState[r]={};MODULES.forEach((m,mi)=>{permState[r][m]={};PERMS.forEach((p,pi)=>{permState[r][m][p]=r==='Admin';});});});
+  } else { permState=JSON.parse(JSON.stringify(APP.permissions)); }
+  buildPermMatrix();
+}
+
+let currentRole='Admin';
+
+function buildPermMatrix() {
+  const el=document.getElementById('permissionMatrix');
+  if(!el) return;
+  let html=`<div class="flex gap-8 mb-16">${ROLES.map(r=>`<button class="btn btn-${r===currentRole?'primary':'outline'} btn-sm" onclick="switchPermRole('${r}')" id="permRole-${r}">${r}</button>`).join('')}</div>`;
+  html+=`<div id="permRoleContent"></div>`;
+  el.innerHTML=html;
+  renderRolePerms(currentRole);
+}
+function switchPermRole(role){currentRole=role;ROLES.forEach(r=>{const el=document.getElementById('permRole-'+r);if(el)el.className='btn btn-'+(r===role?'primary':'outline')+' btn-sm';});renderRolePerms(role);}
+
+function renderRolePerms(role) {
+  const el=document.getElementById('permRoleContent');
+  if(!el) return;
+  if(!permState[role]) {permState[role]={};MODULES.forEach(m=>{permState[role][m]={};PERMS.forEach(p=>{permState[role][m][p]=role==='Admin';});});}
+  el.innerHTML=`<table class="perm-table" style="width:100%"><thead><tr><th>Module</th>${PERMS.map(p=>`<th>${p}</th>`).join('')}</tr></thead>
+  <tbody>${MODULES.map(m=>`<tr><td style="text-align:left;font-weight:500">${m}</td>${PERMS.map(p=>`<td>
+    <label class="toggle" style="display:inline-block"><input type="checkbox" ${permState[role][m]?.[p]?'checked':''} onchange="togglePerm('${role}','${m}','${p}',this.checked)"><span class="slider"></span></label>
+  </td>`).join('')}</tr>`).join('')}</tbody></table>`;
+}
+
+function togglePerm(role,mod,perm,val){if(!permState[role])permState[role]={};if(!permState[role][mod])permState[role][mod]={};permState[role][mod][perm]=val;}
+
+function applyTemplate(tpl) {
+  const t=TEMPLATES[tpl];
+  MODULES.forEach((m,mi)=>{PERMS.forEach((p,pi)=>{if(!permState[currentRole])permState[currentRole]={};if(!permState[currentRole][m])permState[currentRole][m]={};permState[currentRole][m][p]=t[mi][pi];});});
+  renderRolePerms(currentRole); toast(`${tpl} template applied to ${currentRole}`,'success');
+}
+
+function savePermissions() {
+  APP.permissions=JSON.parse(JSON.stringify(permState));
+  saveData(); toast('Permissions saved','success'); logActivity('Permissions updated','Settings');
+}
+
+// ══════════════════════════════════════════════════════════
+// EMAIL SETTINGS
+// ══════════════════════════════════════════════════════════
+const EMAIL_TEMPLATES={
+  reminder:{subject:'Payment Reminder - {InvoiceNo} | Jainco Pvt Ltd',body:`Dear {VendorName},\n\nThis is a friendly reminder that Invoice {InvoiceNo} for ₹{Amount} is due on {DueDate}.\n\nPlease process the payment at your earliest convenience.\n\nBest regards,\nJainco Pvt Ltd Accounts Team`},
+  due:{subject:'Invoice Due: {InvoiceNo}',body:`Dear {VendorName},\n\nYour invoice {InvoiceNo} for ₹{Amount} is now due.\n\nPlease contact us if you have any questions.\n\nRegards,\nJainco Pvt Ltd`},
+  welcome:{subject:'Welcome to Jainco Vendor Portal',body:`Dear {VendorName},\n\nWelcome to Jainco Pvt Ltd's vendor portal.\n\nYour Vendor ID: {VendorID}\n\nBest regards,\nJainco Pvt Ltd`},
+  confirm:{subject:'Payment Confirmation - {PaymentID}',body:`Dear {VendorName},\n\nWe confirm receipt of payment {PaymentID} for ₹{Amount} on {Date}.\n\nThank you for your services.\n\nBest regards,\nJainco Pvt Ltd Accounts`}
+};
+
+function loadTemplate() {
+  const t=document.getElementById('emailTemplate')?.value||'reminder';
+  const tmpl=EMAIL_TEMPLATES[t];
+  if(document.getElementById('tmplSubject')) document.getElementById('tmplSubject').value=tmpl.subject;
+  if(document.getElementById('tmplBody')) document.getElementById('tmplBody').value=tmpl.body;
+}
+
+function saveTemplate() {
+  const t=document.getElementById('emailTemplate').value;
+  EMAIL_TEMPLATES[t]={subject:document.getElementById('tmplSubject').value,body:document.getElementById('tmplBody').value};
+  toast('Template saved','success');
+}
+
+function testEmail(){toast('Test email sent to admin@jainco.in','info');}
+function saveEmailSettings(){
+  const s={host:document.getElementById('smtpHost').value,port:document.getElementById('smtpPort').value,user:document.getElementById('smtpUser').value};
+  localStorage.setItem('jaincoSMTP',JSON.stringify(s));
+  toast('Email settings saved','success'); logActivity('Email settings updated','Settings');
+}
+
+// ══════════════════════════════════════════════════════════
+// PROFILE
+// ══════════════════════════════════════════════════════════
+function saveProfile() {
+  const name=document.getElementById('profName').value;
+  document.getElementById('profileAvatar').textContent=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  document.querySelector('.header-avatar').textContent=name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+  toast('Profile updated','success'); logActivity('Profile updated','Profile');
+}
+
+function changePassword() {
+  const cur=document.getElementById('curPwd').value;
+  const nw=document.getElementById('newPwd').value;
+  const cf=document.getElementById('confPwd').value;
+  if(!cur||!nw){toast('All fields required','error');return;}
+  if(nw!==cf){toast('Passwords do not match','error');return;}
+  if(nw.length<6){toast('Password must be at least 6 characters','error');return;}
+  toast('Password changed successfully','success');
+  document.getElementById('curPwd').value=''; document.getElementById('newPwd').value=''; document.getElementById('confPwd').value='';
+}
+
+function saveNotifPref(){toast('Notification preferences saved','success');}
+
+// ══════════════════════════════════════════════════════════
+// ADMIN
+// ══════════════════════════════════════════════════════════
+function loadAdminInfo() {
+  const el=document.getElementById('sysInfo');
+  if(!el) return;
+  el.innerHTML=`
+    <div><span style="color:var(--text3)">Version:</span> ${CONFIG.VERSION}</div>
+    <div><span style="color:var(--text3)">Last Sync:</span> ${new Date().toLocaleString('en-IN')}</div>
+    <div><span style="color:var(--text3)">Total Vendors:</span> ${APP.vendors.length}</div>
+    <div><span style="color:var(--text3)">Total Invoices:</span> ${APP.invoices.length}</div>
+    <div><span style="color:var(--text3)">Total Payments:</span> ${APP.payments.length}</div>
+    <div><span style="color:var(--text3)">Archived Vendors:</span> ${APP.archived_vendors.length}</div>
+    <div><span style="color:var(--text3)">Total Users:</span> ${APP.users.length}</div>`;
+}
+
+function saveAdminSettings() {
+  CONFIG.COMPANY=document.getElementById('compName').value;
+  CONFIG.GST_RATE=parseFloat(document.getElementById('gstRate').value)||18;
+  CONFIG.SHEET_URL=document.getElementById('sheetUrl').value;
+  localStorage.setItem('jaincoConfig',JSON.stringify(CONFIG));
+  toast('Settings saved','success'); logActivity('Admin settings saved','Admin');
+}
+
+function backupData() {
+  const d={vendors:APP.vendors,invoices:APP.invoices,payments:APP.payments,users:APP.users,
+    archived_vendors:APP.archived_vendors,archived_invoices:APP.archived_invoices};
+  downloadJSON(`Jainco_Backup_${today()}.json`,d);
+  toast('Backup downloaded','success');
+}
+
+async function syncGoogleSheet() {
+  if(!CONFIG.SHEET_URL){toast('Google Sheet URL not configured. Set it in Admin Panel.','warning');return;}
+  toast('Syncing with Google Sheets...','info');
+  const vendors=await fetchFromSheet('vendors');
+  if(vendors){APP.vendors=vendors;saveData();renderVendors();toast('Vendors synced from Google Sheets','success');}
+  else{toast('Sync failed. Check your Google Script URL.','error');}
+}
+
+function clearAllData() {
+  confirm('Clear All Data','This will permanently delete ALL data including vendors, invoices, and payments. This CANNOT be undone!',()=>{
+    APP.vendors=[];APP.invoices=[];APP.payments=[];APP.archived_vendors=[];APP.archived_invoices=[];APP.activityLog=[];
+    saveData();renderVendors();renderInvoices();loadDashboard();
+    toast('All data cleared','success');
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// POPULATE SELECTS
+// ══════════════════════════════════════════════════════════
+function populateVendorSelects() {
+  const opts = ['<option value="">Select Vendor...</option>',...APP.vendors.map(v=>`<option value="${v.VendorID}">${v.Name}</option>`)].join('');
+  ['payVendor','iVendor','vdVendorSelect','ledgerVendor'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el){
+      const prev=el.value;
+      if(id==='ledgerVendor') el.innerHTML='<option value="">All Vendors</option>'+APP.vendors.map(v=>`<option value="${v.VendorID}">${v.Name}</option>`).join('');
+      else el.innerHTML=opts;
+      el.value=prev;
+    }
+  });
+}
+
+// ══════════════════════════════════════════════════════════
+// SEARCH
+// ══════════════════════════════════════════════════════════
+function openSearch(){document.getElementById('searchModalOverlay').classList.add('open');document.getElementById('searchModalInput').value='';document.getElementById('searchResults').innerHTML='';setTimeout(()=>document.getElementById('searchModalInput').focus(),100);}
+function closeSearch(e){if(e.target.id==='searchModalOverlay')document.getElementById('searchModalOverlay').classList.remove('open');}
+
+function globalSearch(q) {
+  if(!q||q.length<2){document.getElementById('searchResults').innerHTML='';return;}
+  const ql=q.toLowerCase();
+  const results=[];
+  APP.vendors.filter(v=>v.Name.toLowerCase().includes(ql)||v.VendorID.toLowerCase().includes(ql)).slice(0,4).forEach(v=>
+    results.push({icon:'fa-building',label:v.Name,sub:v.Category+' · '+v.City,action:`navigate('vendors',document.querySelector('.nav-item:nth-child(2)'));document.getElementById('vendorSearch').value='${v.Name}';renderVendors()`}));
+  APP.invoices.filter(i=>i.InvoiceNo.toLowerCase().includes(ql)||i.VendorName.toLowerCase().includes(ql)).slice(0,4).forEach(i=>
+    results.push({icon:'fa-file-invoice',label:i.InvoiceNo,sub:i.VendorName+' · ₹'+fmtNum(i.TotalAmount)+' · '+i.Status,action:`navigate('invoices',document.querySelectorAll('.nav-item')[2]);document.getElementById('invSearch').value='${i.InvoiceNo}';renderInvoices()`}));
+  document.getElementById('searchResults').innerHTML=results.length?results.map(r=>`<div class="search-result-item" onclick="${r.action};document.getElementById('searchModalOverlay').classList.remove('open')">
+    <i class="fas ${r.icon}" style="color:var(--accent);width:16px"></i>
+    <div><div style="font-size:13px">${r.label}</div><div style="font-size:11px;color:var(--text3)">${r.sub}</div></div>
+  </div>`).join(''):'<div style="padding:20px;text-align:center;color:var(--text3)">No results found</div>';
+}
+
+// ══════════════════════════════════════════════════════════
+// MODAL HELPERS
+// ══════════════════════════════════════════════════════════
+function openModal(id){document.getElementById(id).classList.add('open');}
+function closeModal(id){document.getElementById(id).classList.remove('open');}
+function closeAllModals(){document.querySelectorAll('.modal-overlay').forEach(m=>m.classList.remove('open'));document.getElementById('searchModalOverlay').classList.remove('open');}
+let _confirmCb=null;
+function confirm(title,msg,cb){
+  _confirmCb=cb;
+  document.getElementById('confirmTitle').textContent=title;
+  document.getElementById('confirmBody').innerHTML=`<p style="color:var(--text2)">${msg}</p>`;
+  document.getElementById('confirmOkBtn').onclick=()=>{closeConfirm();if(_confirmCb)_confirmCb();};
+  openModal('confirmOverlay');
+}
+function closeConfirm(){closeModal('confirmOverlay');}
+
+// ══════════════════════════════════════════════════════════
+// TOAST
+// ══════════════════════════════════════════════════════════
+function toast(msg, type='info') {
+  const icons={success:'fa-check-circle',error:'fa-exclamation-circle',warning:'fa-exclamation-triangle',info:'fa-info-circle'};
+  const t=document.createElement('div');
+  t.className=`toast ${type}`;
+  t.innerHTML=`<i class="fas ${icons[type]||icons.info}"></i><span>${msg}</span>`;
+  document.getElementById('toastContainer').appendChild(t);
+  setTimeout(()=>{t.style.animation='slideOut .3s ease forwards';setTimeout(()=>t.remove(),300);},3000);
+}
+
+// ══════════════════════════════════════════════════════════
+// PAGINATION
+// ══════════════════════════════════════════════════════════
+function renderPagination(containerId, current, total, onClick) {
+  const el=document.getElementById(containerId);
+  if(!el||total<=1){if(el)el.innerHTML='';return;}
+  let html=`<button class="page-btn" onclick="(${onClick})(${current-1})" ${current===1?'disabled':''}>‹</button>`;
+  for(let i=1;i<=total;i++) {
+    if(total>7&&i>2&&i<total-1&&Math.abs(i-current)>1){if(i===3||i===total-2)html+='<span style="color:var(--text3);padding:0 4px">…</span>'; continue;}
+    html+=`<button class="page-btn ${i===current?'active':''}" onclick="(${onClick})(${i})">${i}</button>`;
+  }
+  html+=`<button class="page-btn" onclick="(${onClick})(${current+1})" ${current===total?'disabled':''}>›</button>`;
+  el.innerHTML=html;
+}
+
+// ══════════════════════════════════════════════════════════
+// UTILS
+// ══════════════════════════════════════════════════════════
+function fmtNum(n){return Number(n).toLocaleString('en-IN');}
+function today(){return new Date().toISOString().split('T')[0];}
+function genId(prefix,arr,key){
+  if(prefix==='PAY-'){const nums=arr.map(i=>parseInt(i[key]?.replace('PAY-','')||0)).filter(n=>!isNaN(n));return 'PAY-'+(Math.max(0,...nums)+1).toString().padStart(3,'0');}
+  const nums=arr.map(i=>parseInt(i[key]?.replace(/\D/g,''))||0);return prefix+(Math.max(0,...nums)+1).toString().padStart(3,'0');
+}
+function genInvNo(){
+  const y=new Date().getFullYear();
+  const existing=APP.invoices.filter(i=>i.InvoiceNo.includes(y)).map(i=>parseInt(i.InvoiceNo.split('-').pop())||0);
+  return `INV-${y}-${(Math.max(0,...existing)+1).toString().padStart(3,'0')}`;
+}
+function statusBadge(s){
+  const m={Active:'badge-success',Inactive:'badge-gray',Paid:'badge-success',Pending:'badge-warning',Overdue:'badge-danger'};
+  const icon={Paid:'check',Pending:'clock',Overdue:'exclamation',Active:'circle',Inactive:'minus-circle'};
+  return `<span class="badge ${m[s]||'badge-gray'}"><i class="fas fa-${icon[s]||'circle'}" style="font-size:9px"></i>${s}</span>`;
+}
+function downloadCSV(filename,content){
+  const blob=new Blob([content],{type:'text/csv'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();
+}
+function downloadJSON(filename,data){
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=filename;a.click();
+}
+function logActivity(action,module){
+  APP.activityLog.push({time:new Date().toLocaleString('en-IN'),user:'Admin',action,module});
+  if(APP.activityLog.length>100) APP.activityLog=APP.activityLog.slice(-100);
+}
+
+// ══════════════════════════════════════════════════════════
+// START
+// ══════════════════════════════════════════════════════════
+window.addEventListener('load', init);
+</script>
+</body>
+</html>
