@@ -1,0 +1,323 @@
+claude ai par ek web Application create karna hai niche diye gaye sare points ka use karna hai eske liye ek achha sa prompt likho or samjaho kiya karna hai
+prompt advance or professional hona chahiye.
+# Ek Vendor Management system create karna hai "Jainco pvt ltd" ke name se or ye dark, light or 5 different color theam me hona chahiye, very advance features ke sath professional ho
+# sara dashboard script par ho HTML 5, Java script, CSS3 etc ka use karo
+# niche diye points side bar me sab point use ho or sab ka details bhi ho 
+main dashboard
+Vendors
+Vendor Invoices
+Payment Entry
+Vender Dashboard
+Ledger
+Archive
+Payment Cycle
+Mis Score
+user management
+permission manager
+email settings
+my profile
+admin panal
+
+# google sheet connect ho esle liye google script ka use ho or dummy data ka file bhi create karo
+# color mode dark, light or 5 different color theam ka option bhi ho
+# setup or deploy ka step by step bhi batao
+============================================================================================================================================================
+You are a senior full-stack web developer specializing in enterprise-grade 
+dashboard applications. Your task is to build a complete, production-ready 
+Vendor Management System (VMS) for "Jainco Pvt Ltd" using pure HTML5, 
+CSS3, and Vanilla JavaScript — no frameworks, no npm, no build tools.
+
+═══════════════════════════════════════════════════
+PROJECT: JAINCO PVT LTD — VENDOR MANAGEMENT SYSTEM
+═══════════════════════════════════════════════════
+
+DELIVER exactly 3 files in one response:
+  1. index.html         → Full VMS Application (single-file SPA)
+  2. google-script.gs   → Google Apps Script backend
+  3. dummy-data.json    → Sample dataset (30+ vendors, 50+ invoices)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 1 — LAYOUT STRUCTURE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Build a fixed left sidebar (260px) + main content area layout.
+
+SIDEBAR must contain:
+  • Company logo + "Jainco Pvt Ltd" branding at top
+  • Navigation items grouped in sections:
+
+  [CORE]
+  ├── 🏠  Main Dashboard
+  ├── 🏢  Vendors
+  ├── 🧾  Vendor Invoices
+  ├── 💳  Payment Entry
+  └── 📊  Vendor Dashboard
+
+  [FINANCE]
+  ├── 📒  Ledger
+  ├── 🗄️  Archive
+  ├── 🔄  Payment Cycle
+  └── 📈  MIS Score
+
+  [SETTINGS]
+  ├── 👥  User Management
+  ├── 🔐  Permission Manager
+  ├── 📧  Email Settings
+  ├── 👤  My Profile
+  └── ⚙️  Admin Panel
+
+  • Theme switcher at sidebar bottom (icon pills for 7 themes)
+  • Active state with highlight + left border accent
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 2 — PAGE MODULES (each fully functional)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+[1] MAIN DASHBOARD
+  • 6 KPI cards: Total Vendors, Active Vendors, Total Invoices,
+    Pending Payments, Paid This Month, Overdue Invoices
+  • Bar chart (monthly payments) using Chart.js CDN
+  • Pie chart (vendor category distribution)
+  • Recent Transactions table (last 10 entries)
+  • Top 5 Vendors by invoice value
+  • Real-time clock + date in header
+
+[2] VENDORS
+  • Full CRUD table (Add / Edit / Delete / View)
+  • Columns: Vendor ID, Name, Category, GST No, Contact, 
+    Email, City, Status (Active/Inactive), Join Date, Actions
+  • Search bar + Category filter + Status filter
+  • Export to CSV button
+  • Pagination (10 rows per page)
+  • Inline status toggle (Active ↔ Inactive)
+  • Modal form for Add/Edit with validation
+
+[3] VENDOR INVOICES
+  • Invoice list table with: Invoice No, Vendor Name, 
+    Amount, GST, Total, Issue Date, Due Date, Status
+  • Status badges: Paid (green), Pending (amber), Overdue (red)
+  • Filter by Vendor, Date Range, Status
+  • Generate Invoice button → PDF-printable modal view
+  • Bulk status update
+
+[4] PAYMENT ENTRY
+  • Payment form: Select Vendor, Invoice Ref, Amount, 
+    Payment Mode (NEFT/RTGS/Cheque/Cash/UPI), 
+    Bank Reference, Payment Date, Remarks
+  • Auto-calculate balance due on vendor selection
+  • Recent payments log table
+  • Total paid today / this month summary cards
+
+[5] VENDOR DASHBOARD (per-vendor detail view)
+  • Vendor profile card (name, logo initials, contact info)
+  • Mini KPIs: Total Invoiced, Total Paid, Outstanding
+  • Invoice history line chart (last 12 months)
+  • All invoices table filtered for this vendor
+  • Payment history timeline
+
+[6] LEDGER
+  • Double-entry style ledger: Date, Description, Debit, 
+    Credit, Balance, Vendor Name
+  • Running balance column (auto-calculated)
+  • Filter by Vendor, Date Range
+  • Opening Balance input
+  • Print / Export functionality
+
+[7] ARCHIVE
+  • Archived vendors and invoices in separate tabs
+  • Restore button (move back to active)
+  • Permanent delete with confirmation dialog
+  • Archive date, archived by user info
+
+[8] PAYMENT CYCLE
+  • Visual timeline of payment due dates (next 30 days)
+  • Color-coded urgency: Red (overdue), Orange (due in 3 days),
+    Yellow (due in 7 days), Green (on track)
+  • Bulk "Mark as Paid" functionality
+  • Payment reminder email trigger button (calls Google Script)
+  • Cycle summary: Total Due This Week / Month
+
+[9] MIS SCORE
+  • Vendor Performance Scorecard (0–100 score)
+  • Score factors: Payment Timeliness (30%), Invoice Accuracy (25%),
+    Response Time (20%), Compliance (15%), Dispute Rate (10%)
+  • Color-coded ratings: Excellent (80+), Good (60–79), 
+    Average (40–59), Poor (<40)
+  • Sortable score table with trend arrow (↑ ↓ →)
+  • Bar chart comparison across all vendors
+  • Individual vendor score breakdown modal
+
+[10] USER MANAGEMENT
+  • Users table: Name, Email, Role, Last Login, Status
+  • Add/Edit/Deactivate user modal
+  • Role assignment: Admin, Manager, Viewer, Accountant
+  • Activity log (last 20 actions per user)
+
+[11] PERMISSION MANAGER
+  • Role-permission matrix table
+  • Toggle switches for: View, Create, Edit, Delete per module
+  • Pre-built role templates
+  • Save permissions button
+
+[12] EMAIL SETTINGS
+  • SMTP configuration form (host, port, username, password)
+  • Email templates: Payment Reminder, Invoice Due, 
+    Welcome Vendor, Payment Confirmation
+  • Template editor with preview
+  • Test email send button
+
+[13] MY PROFILE
+  • Profile card with initials avatar
+  • Edit name, email, phone, designation
+  • Change password section (current + new + confirm)
+  • Notification preferences toggles
+  • Theme preference (synced with global theme)
+
+[14] ADMIN PANEL
+  • System settings: Company name, Logo URL, Currency, 
+    GST %, Financial Year Start
+  • Google Sheet URL configuration input
+  • Backup data button (downloads JSON)
+  • Clear all data button (with confirmation)
+  • System info: Version, Last sync time, Total records
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 3 — THEME SYSTEM (7 MODES)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Implement via CSS custom properties on :root[data-theme="..."]
+
+THEMES:
+  1. dark     → bg: #0f1117, sidebar: #1a1d27, accent: #6366f1
+  2. light    → bg: #f5f7fa, sidebar: #ffffff, accent: #4f46e5
+  3. ocean    → bg: #0d1b2a, sidebar: #1b3a5c, accent: #00b4d8
+  4. forest   → bg: #1a2e1a, sidebar: #2d4a2d, accent: #4ade80
+  5. sunset   → bg: #1f1411, sidebar: #2e1f1a, accent: #fb923c
+  6. royal    → bg: #0f0f23, sidebar: #1e1e3f, accent: #a855f7
+  7. crimson  → bg: #1a0f0f, sidebar: #2e1a1a, accent: #ef4444
+
+Theme switcher: 7 colored circle buttons in sidebar footer.
+Persist selected theme in localStorage.
+Smooth transition: all elements transition color in 300ms.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 4 — GOOGLE SHEETS INTEGRATION
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Google Apps Script (google-script.gs) requirements:
+  • doGet(e): Return all data as JSON based on ?sheet= param
+    - ?sheet=vendors  → Sheet "Vendors" data
+    - ?sheet=invoices → Sheet "Invoices" data
+    - ?sheet=payments → Sheet "Payments" data
+  • doPost(e): Accept JSON body for Create, Update, Delete ops
+    - action: "create" | "update" | "delete"
+    - sheet: target sheet name
+    - data: row object
+    - rowId: for update/delete operations
+  • CORS headers on all responses
+  • Error handling with proper HTTP status codes
+
+Google Sheets structure (3 sheets):
+  Sheet 1 "Vendors": VendorID, Name, Category, GSTNo, 
+    ContactPerson, Phone, Email, City, State, Status, 
+    JoinDate, BankAccount, IFSC, PaymentTerms
+  
+  Sheet 2 "Invoices": InvoiceNo, VendorID, VendorName, 
+    InvoiceDate, DueDate, Items, Amount, GSTAmount, 
+    TotalAmount, Status, PaidDate, PaymentRef
+  
+  Sheet 3 "Payments": PaymentID, VendorID, InvoiceRef, 
+    Amount, PaymentMode, BankRef, PaymentDate, 
+    ProcessedBy, Remarks
+
+In index.html:
+  • CONFIG object at top of <script>: 
+    const CONFIG = { SHEET_URL: "PASTE_YOUR_DEPLOYED_URL_HERE" }
+  • All data operations go through fetchData(sheet) and postData(action, sheet, data)
+  • Fallback to dummy-data.json if SHEET_URL is empty
+  • Loading spinner during API calls
+  • Error toast if API fails
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 5 — DUMMY DATA (dummy-data.json)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Generate realistic Indian business data:
+  • 30 vendors across categories: IT Services, Raw Materials, 
+    Logistics, Office Supplies, Maintenance, Marketing
+  • 60 invoices with varied statuses (paid, pending, overdue)
+  • 40 payment records
+  • Vendors from cities: Delhi, Mumbai, Bengaluru, Chennai, 
+    Pune, Hyderabad, Kolkata, Ahmedabad
+  • Amounts in INR (₹) ranging ₹5,000 to ₹5,00,000
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 6 — ADVANCED UI REQUIREMENTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • Toast notifications (success/error/warning) — top-right, 
+    auto-dismiss after 3 seconds
+  • Confirmation modal for destructive actions (delete, archive)
+  • Responsive tables with horizontal scroll on mobile
+  • Skeleton loader for data tables
+  • Keyboard shortcut: Ctrl+K → search modal
+  • Breadcrumb navigation in header
+  • Page transition: fade-in on section change
+  • Sticky header with page title + user avatar
+  • Badge count on sidebar items (e.g. "Invoices 3" for overdue)
+  • Print stylesheet for invoices and ledger
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+SECTION 7 — STEP-BY-STEP SETUP & DEPLOY GUIDE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+After all 3 files, include a detailed setup guide covering:
+
+PART A — Local Setup
+  1. Save index.html + dummy-data.json in same folder
+  2. Open index.html in Chrome (works offline with dummy data)
+  3. Verify all 14 modules load correctly
+
+PART B — Google Sheets Setup
+  1. Create a new Google Spreadsheet
+  2. Create 3 sheets: Vendors, Invoices, Payments
+  3. Add the header rows as specified
+  4. Go to Extensions → Apps Script
+  5. Delete default code, paste google-script.gs content
+  6. Save the project with name "Jainco VMS Backend"
+  7. Click Deploy → New Deployment
+  8. Type: Web App
+  9. Execute as: Me
+  10. Who has access: Anyone
+  11. Click Deploy → Copy the Web App URL
+  12. Open index.html → find CONFIG object
+  13. Replace "PASTE_YOUR_DEPLOYED_URL_HERE" with copied URL
+  14. Save file — now live with real Google Sheets data
+
+PART C — Online Deploy (Free Hosting)
+  Option 1 — GitHub Pages:
+    1. Create GitHub account → New repository "jainco-vms"
+    2. Upload index.html + dummy-data.json
+    3. Go to Settings → Pages → Source: main branch
+    4. Live at: https://yourusername.github.io/jainco-vms
+
+  Option 2 — Netlify (drag and drop):
+    1. Go to netlify.com → Log in
+    2. Drag your project folder to Netlify dashboard
+    3. Get instant live URL (e.g. jainco-vms.netlify.app)
+    4. Optional: Add custom domain in site settings
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+TECHNICAL CONSTRAINTS
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+  • Pure HTML5 + CSS3 + Vanilla JS only (no React, Vue, Angular)
+  • Use Chart.js via CDN for charts
+  • Use Font Awesome 6 via CDN for icons
+  • Use Google Fonts (Inter) via CDN
+  • All CSS in <style> tag inside index.html
+  • All JS in <script> tag inside index.html
+  • No external CSS files, no node_modules
+  • Must work by simply opening index.html in browser
+  • Data stored in localStorage for offline persistence
+  • File must be complete — no placeholders like "// add code here"
